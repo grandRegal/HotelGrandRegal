@@ -8,13 +8,13 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <div style={{width:"100vw", minHeight:"100vh", marginTop:"100px"}}>
-        <Routes> 
+      <div id = "mainContentDiv">
+        <Routes>
             <Route path="/" element={<h1 >hi</h1>}/>
             <Route path="*" element={<PageNotFound />}/>
         </Routes>
-        <Footer />
       </div>
+      <Footer />
     </BrowserRouter>
   );
 }

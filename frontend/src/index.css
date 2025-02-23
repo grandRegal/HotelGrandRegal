@@ -9,9 +9,20 @@ body{
   background-image: url('./files/bg.jpg'); background-repeat: no-repeat;   background-size: auto 100vh;  background-position: top;   background-attachment: fixed;
 }
 
+#mainContentDiv{
+  width: 100vw; 
+  min-height: 100vh; 
+  margin-top: 100px;
+}
 
 body::-webkit-scrollbar{
   display: none;
+}
+
+@media (max-width : 760px){
+  #mainContentDiv{
+    margin-top: 150px;
+  }
 }
 
 @media (min-width : 630px){
