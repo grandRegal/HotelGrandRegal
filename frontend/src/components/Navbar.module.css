@@ -72,6 +72,7 @@
     background-color: #4f4040cf;
     border: 2px solid #f6d1ac;      border-bottom: none;    border-radius: 20px;        border-bottom-right-radius: 0px;     border-bottom-left-radius: 0px;
     height: 6em;
+    backdrop-filter: blur(3px);
 }
 
 #selectedM{
