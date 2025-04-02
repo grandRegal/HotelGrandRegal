@@ -1,0 +1,62 @@
+.container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.catHolder{
+    width: 95%;
+    display: flex;
+    height: max-content;
+    gap: 30px;
+    list-style: none;
+    overflow-x: scroll;
+    padding: 10px 30px;
+    background-color: #0c0000;
+    color: white;
+    margin: 20px;
+    border-radius: 15px;
+}
+
+.catHolder li{
+    cursor: pointer;
+}
+
+.selected{
+    border-bottom: 2px solid #fff;
+}
+
+.menuBox{
+    width: 95%;
+    background-color: red;
+    margin: 0px 20px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    row-gap: 10px;
+    justify-content: center;
+    /* justify-content: space-around; */
+}
+
+.menuBox img{
+    width: 300px;
+    height: 200px;
+    background-color: green;
+}
+
+.menuBox ul{
+    min-width: min-content;
+    background-color: purple;
+    list-style: none;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px;
+    gap: 20px;
+    column-gap: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 200px;
+}
