@@ -5,6 +5,7 @@ const upload = multer({ storage: storage });
 const cors = require('cors');
 const app = express();
 const PORT = 3000;
+require('dotenv').config();
 
 const getContent = require('./contentGenerator');
 const handleImg = require('./handleImg');
@@ -12,7 +13,7 @@ const handleImg = require('./handleImg');
 const Creds = require('./utils/creds'); 
 const credsData = new Creds();
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.ACCESS_URL,
     credentials: true
   }));
 app.use(express.json());
