@@ -4,7 +4,7 @@ import SlideShow from "../../components/slideShowCont/SlideShowCont";
 
 import { getShefSpecialItems, getMenu } from "../../utils/DynamicDataFetcher";
 import { dineData } from "../../utils/StaticDataFetcher";
-import fetchData from '../../../adminPanel/utils/fetcher';
+import fetchData from '../../../../adminPanel/utils/fetcher';
 
 import img1 from '../../assets/demoImages/1.jpeg';
 import img2 from '../../assets/demoImages/2.jpeg';

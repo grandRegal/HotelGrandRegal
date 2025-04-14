@@ -2,7 +2,7 @@ import { useState } from 'react';
 import style from './Feedback.module.css';
 import full from './assets/full.png';
 import empty from './assets/empty.png';
-import fetchData from '../../../adminPanel/utils/fetcher';
+import fetchData from '../../../../adminPanel/utils/fetcher';
 
 
 export default function Feedback() {
