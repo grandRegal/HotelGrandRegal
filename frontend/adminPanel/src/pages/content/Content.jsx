@@ -1,0 +1,176 @@
+import { useEffect, useState } from 'react';
+import style from './Content.module.css';
+import dineMenu from './DineMenu.module.css';
+import addMenu from './AddMenu.module.css';
+import thumb from './assets/react.svg';
+import fetchData from '../../../utils/fetcher';
+
+function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpecial = false, catg = 'starter', subCateg = null}){
+    const [cat, setCat] = useState(catg);
+    const [name, setName] = useState(label);
+    const [desc, setDesc] = useState(des);
+    const [price, setPrice] = useState(rate);
+    const [shef, setShef] = useState(isShefSpecial);
+    const [sCat, setSCat] = useState(subCateg);
+    const [inputImg, setImg] = useState(null);
+    const [veg, setVeg] = useState(null);
+    const [bgImg, setBackgroundImage] = useState(thumb);
+    const subCats = {
+        "starter": ["Veg Soup", "Veg Starters", "Chinese Veg Starters", "Eastern Tandoor", "Sizzlers", "Papad/ Salads/ Raita"],
+        "main": ["Chinese Veg", "Veg Mains", "startet 2"],
+        "desert": ["Veg Soup", "Veg Starters", "Chinese Veg Starters"],
+        "drink" : ["Eastern Tandoor", "Sizzlers", "Papad/ Salads/ Raita"]
+    }
+    const handleSubmition = async(e)=>{
+        alert("Adding Menu! PLease Wait");
+        let textData = {
+            name: name,
+            desc: desc,
+            price: price,
+            cat: cat,
+            subCat: sCat,
+            shefSpecial: shef,
+            isVeg: veg
+        }
+        let formData = [{key:"jsonData", value: JSON.stringify(textData)}, {key:"thumb", value: inputImg}];
+        e.preventDefault();
+        let ack = await fetchData('addMenu', 'POST', null, formData);
+        if(ack.status){
+            alert("request Processed");
+        }else{
+            alert("Err= ", ack.reason);
+        }
+    }
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setImg(file);
+          console.log("imgSet");
+          const imageUrl = URL.createObjectURL(file);
+          setBackgroundImage(imageUrl);
+        }
+      };
+    return(
+        <form className={addMenu.form} onSubmit={(e)=>handleSubmition(e)}>
+            <div className={addMenu.box1}>
+                <label className={addMenu.thumbLabel} htmlFor="thumbnail"><div style={{backgroundImage:`url(${bgImg})`, backgroundPosition:"center", backgroundSize:"contain"}}></div></label>
+                <input className={addMenu.thumbInput} id='thumbnail' type="file" src="" alt="" required onChange={(e)=>handleImageChange(e)}/>
+                <input className={addMenu.input1} value = {name} required type="text"  placeholder='Dish Name' onChange={(e)=>setName(e.target.value)}/>
+            </div>
+            <div className={addMenu.box2}>
+                <textarea className={addMenu.input1} required rows={3} name="" id="" placeholder='Dish Description' onChange={(e)=>setDesc(e.target.value)}></textarea>
+                <input className={addMenu.input2} value={price} type="number" name="" id="" placeholder='price' onChange={(e)=>setPrice(e.target.value)}/>
+                <select name="" id="" onChange={(e)=>{setCat(e.target.value); setSCat(subCateg[e.target.value][0])}}>
+                    <option value="starter">Starters</option>
+                    <option value="main">Main Course</option>
+                    <option value="desert">Deserts</option>
+                    <option value="drink">Drinks</option>
+                </select>
+                <select name="" id="" onChange={(e)=>setSCat(e.target.value)}>
+                    {
+                        subCats[cat].map((subCat)=>
+                            <option value={subCat}>{subCat}</option>
+                        )
+                    }
+                </select>
+                <span className={addMenu.shefSpecial} v>
+                    <input type="checkbox" name="" id="shefSpecial" checked= {shef} onChange={(e)=>setShef(e.target.checked)}/>
+                    <label htmlFor="shefSpecial">Is Shef Special ? </label>
+                </span>
+                <span className={addMenu.shefSpecial} v>
+                    <input type="checkbox" name="" id="isVeg" checked= {veg} onChange={(e)=>setVeg(e.target.checked)}/>
+                    <label htmlFor="isVeg">Is Veg ? </label>
+                </span>
+                <button type="submit" className={addMenu.addBtn}>{label? "Edit": "Add"} Item</button>
+            </div>
+        </form>
+    );
+}
+
+function DineMenu(){
+    const [overlay, setOverlay] = useState(false);
+    const [menu, setMenu] = useState([{img:"#", name:"Pavbhaji", desc:"Tasty And Delicious", price:100, cat:"Main Course", subCat:"Indian", shefSpecial: true}
+    ]);
+    useEffect(() => {
+        const fetchMenu = async () => {
+            let data = await fetchData('getMenu', 'GET');
+            if (data.status) {
+                setMenu(data.content);
+            } else {
+                alert("Server Error");
+            }
+        };
+    
+        fetchMenu();
+    }, []);
+    
+    return (
+        <div>
+            <button style={{position:"fixed", bottom:"40px", right:"80px", padding:"5px 20px", borderRadius:"50px", border:"0px", background:"#071f6e", color:"white", fontWeight:"bold", fontSize:"18px"}} onClick={()=>setOverlay(true)}>Add Dish</button>
+            {
+                overlay ? 
+                <div className={dineMenu.overlay}>
+                    <div className={dineMenu.exitArea} onClick={()=>setOverlay(false)}></div>
+                    <AddMenu />
+                </div> : ''
+            }
+            <h2 className={dineMenu.header}>Manage Menu</h2>
+            <table className={dineMenu.menuTable}>
+                <tbody>
+                    <tr>
+                        <th>Sr</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>Is Shef's Special</th>
+                        <th colSpan={2}>Actions</th>
+                    </tr>
+                    {
+                        menu.map((dish, index)=>
+                            <tr className={dineMenu.listRow}>
+                                <td>{index + 1}</td>
+                                <td><img src={dish.img} alt="" /></td>
+                                <td>{dish.name}</td>
+                                <td>{dish.desc}</td>
+                                <td>{dish.price}</td>
+                                <td>{dish.cat}</td>
+                                <td>{dish.subCat}</td>
+                                <td><input type="checkbox" name="" id="" checked = {dish.shefSpecial}/></td>
+                                <td>&#128465;</td>
+                                <td>&#9998;</td>
+                            </tr>
+                        )
+                    }
+                </tbody>
+            </table>
+        </div>
+    )
+}
+
+export default function Content(){
+    const [contentManager, setContentManager] = useState(<DineMenu />);
+    const handleChange = (selectedValue)=>{
+        switch(selectedValue){
+            case 'dineMenu' : 
+                setContentManager(<DineMenu />);
+            break;
+            default:
+                alert("Bad Request");
+        }
+    }
+    return (
+        <div>
+            <h1>Content Management</h1>
+            <select name="" id="" onChange={(e)=>{handleChange(e.target.value)}}>
+                <option value="dineMenu">Dine Menu Management</option>
+            </select>
+            <hr />
+            <div>
+                {contentManager}
+            </div>
+        </div>
+    );
+}
