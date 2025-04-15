@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import style from './Feedback.module.css';
-import apiURL from '../../../../src/utils/api';
-import StarBox from '../../../../src/components/startbox/StarBox';
+const apiURL = 'http://localhost:3000/api';
+import StarBox from '../../../../userPanel/src/components/startbox/StarBox';
 import fetchData from '../../../utils/fetcher';
 
 export default function Feedback() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import style from './Dashboard.module.css';
 // import apiURL from '../../src/utils/api';
-import apiURL from '../../../../src/utils/api';
+const apiURL = 'http://localhost:3000/api';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
-import apiURL from '../../src/utils/api';
+const  apiURL = 'http://localhost:3000/api';
 
 import Navbar from './components/Navbar/Navbar.jsx';
 import Dashboard from './pages/dashboard/Dashboard.jsx';
@@ -9,6 +9,7 @@ import Content from './pages/content/Content.jsx';
 import Feedback from './pages/feedback/Feedback.jsx';
 
 function App() {
+  console.log("I am here in app.jsc handeling");
   const LoginForm = () => {
     const [username, setUn] = useState('');
     const [pwd, setPwd] = useState('');
@@ -18,6 +19,7 @@ function App() {
     const handleLogin = (e) => {
       console.log("sending Login", username, pwd)
       e.preventDefault();
+      console.log("I am here in app.jsc handeling");
       fetch(apiURL + '/adminLogin', {
         method: 'POST',
         credentials: 'include',
@@ -72,11 +74,12 @@ function App() {
     <Navbar />
       <div>
         <div id="mainContentDiv">
+          hi
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/content" element={<Content />} />
-            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/feedback" element={<Feedback />} /> 
           </Routes>
         </div>
         {/* <Footer /> */}

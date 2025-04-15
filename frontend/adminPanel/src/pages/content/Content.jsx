@@ -16,10 +16,10 @@ function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpec
     const [veg, setVeg] = useState(null);
     const [bgImg, setBackgroundImage] = useState(thumb);
     const subCats = {
-        "starter": ["Veg Soup", "Veg Starters", "Chinese Veg Starters", "Eastern Tandoor", "Sizzlers", "Papad/ Salads/ Raita"],
-        "main": ["Chinese Veg", "Veg Mains", "startet 2"],
-        "desert": ["Veg Soup", "Veg Starters", "Chinese Veg Starters"],
-        "drink" : ["Eastern Tandoor", "Sizzlers", "Papad/ Salads/ Raita"]
+        "starter": ["Veg Soup", "Veg Starters", "Chinese Veg Starters", "Eastern Oven Tandoor", "Sizzling Sizzlers", "Chinese Veg Main", "Papad/ Salads/ Raita", "Nonveg Soup", "Non Veg Chinese Starters", "Salads"],
+        "main": ["Veg Mains", "Dals", "Chinese Rice/ Noodles / Chopsuey", "Veg Biryani", "Non Veg Mains", "Chicken NonVeg Main", "NonVeg Rice/ Noodles", "Biryani", "Indian Breads", "Sandwiches - Plain / Grilled", "Pizza and Pasta"],
+        "desert": ["Deserts"],
+        "drink" : ["Coolers", "Beverages", "Milk Shakers / Faluda"]
     }
     const handleSubmition = async(e)=>{
         alert("Adding Menu! PLease Wait");
