@@ -6,7 +6,7 @@ import thumb from './assets/react.svg';
 import fetchData from '../../../utils/fetcher';
 import { useNavigate } from 'react-router-dom';
 
-function AddMenu({onAdd, img = thumb, label = null, des = null, rate = null, isShefSpecial = false,  isVeg = false, catg = 'starter', subCateg = 'Veg Soup'}){
+function AddMenu({onAdd, img = thumb, label = null, des = null, rate = null, isShefSpecial = false,  vegD = false, catg = 'starter', subCateg = 'Veg Soup'}){
     const [cat, setCat] = useState(catg);
     const [name, setName] = useState(label);
     const [desc, setDesc] = useState(des);
@@ -14,7 +14,7 @@ function AddMenu({onAdd, img = thumb, label = null, des = null, rate = null, isS
     const [shef, setShef] = useState(isShefSpecial);
     const [sCat, setSCat] = useState(subCateg);
     const [inputImg, setImg] = useState(null);
-    const [veg, setVeg] = useState(isVeg);
+    const [veg, setVeg] = useState(vegD);
     const [bgImg, setBackgroundImage] = useState(thumb);
     const subCats = {
         "starter": ["Veg Soup", "Veg Starters", "Chinese Veg Starters", "Eastern Oven Tandoor", "Sizzling Sizzlers", "Chinese Veg Main", "Papad/ Salads/ Raita", "Nonveg Soup", "Non Veg Chinese Starters", "Salads"],

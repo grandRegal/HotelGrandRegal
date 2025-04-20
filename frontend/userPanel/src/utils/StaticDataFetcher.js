@@ -221,52 +221,14 @@ export const roomData = {
 export const banquetData = {
     slideShow : {
         gallery : [
-            rImg1, rImg2, rImg3, rImg4
+            "https://res.cloudinary.com/de9mmhibr/image/upload/v1744559098/banquet1img9_v301p8.jpg", "https://res.cloudinary.com/de9mmhibr/image/upload/v1744559099/banquet1img1_rdmilv.jpg", "https://res.cloudinary.com/de9mmhibr/image/upload/v1744559098/banquet2img4_f5wrrf.jpg", "https://res.cloudinary.com/de9mmhibr/image/upload/v1744559097/banquet2img10_pkp4fa.jpg"
         ],
         body: [
-            "Elegantly furnished for a cozy stay.",
-            "Spacious rooms for ultimate comfort",
-            "Spotless rooms,  hygienic washrooms",
-            "Soft beds, pure relaxation",
+            "Where Moments Turn Into Milestones",
+            "Every Seat Holds a Story",
+            "Where Comfort Meets Celebration",
+            "Color, Cheer, and Celebration",
         ]
-    },
-    blogCard:{
-        img1: rImg1,
-        img2: rImg2,
-        blog1 : {
-            overview: "this is fake overview which i am entering to see how its looking on teh actual wensite this is fake overview which i am entering to see how its looking on teh actual wensite",
-            features: [
-                {
-                    logo: "",
-                    label: "100 peoples"
-                },
-                {
-                    logo: "",
-                    label: "100 peoples"
-                },
-                {
-                    logo: "",
-                    label: "100 peoples"
-                },
-            ], gallery: [img1, img2, img3, rImg1,dImg1, img1, rImg1, img1, img1, img1,rImg3, img1, img1, img1, img1, dImg1]
-        },
-        blog2: {
-            overview: "this is fake overview which i am entering to see how its looking on teh actual wensite this is fake overview which i am entering to see how its looking on teh actual wensite",
-            features: [
-                {
-                    logo: "",
-                    label: "100 peoples"
-                },
-                {
-                    logo: "",
-                    label: "100 peoples"
-                },
-                {
-                    logo: "",
-                    label: "100 peoples"
-                },
-            ], gallery: ["", "", "", "","", "", "", "","", "", "", ""]
-        }
     }
 }
 

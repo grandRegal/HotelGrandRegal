@@ -55,6 +55,7 @@
 
 .menuCardCatName{
     padding: 5px 20px;
+    margin-bottom: 10px;
     border-bottom: 2px solid #b9a8a8;   border-radius: 15%;
     color: #f8f2d3;     text-align: center;
 }
@@ -62,6 +63,7 @@
 .menuList{
     width: 100%;
     padding: 0px 20px;
+    padding-left: 0px;
     display: grid;      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));    gap: 20px;
 }
 
@@ -83,7 +85,7 @@
 
 .dishName{
     grid-area: 1/2/2/3;
-    font-size: 2em;
+    font-size: 1.8em;
 }
 
 .dishDesc{

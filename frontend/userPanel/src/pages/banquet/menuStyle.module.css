@@ -1,6 +1,6 @@
 .container{
     width: 100%;
-    height: 100%;
+    max-height: max-content;
     display: flex;
     flex-direction: column;
 }
@@ -26,6 +26,7 @@
     cursor: pointer;
     min-height: max-content;
     padding: 3px;
+    text-wrap: nowrap;
 }
 
 .selected{

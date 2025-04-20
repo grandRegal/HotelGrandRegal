@@ -1,5 +1,6 @@
 .container{
     width: calc(100vw - clamp(30px, 15vw, 200px));
+    max-width: 99vw;
     display: flex;
     margin: auto;
     justify-content: left;
@@ -26,7 +27,8 @@
     list-style: none;
     color: rgb(231, 218, 200);
     font-family: caliscalistoga, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    min-width: calc(100% + 40px);
+    min-width: calc(100% + 80px);
+    margin-left: -20px;
 }
 
 .container li{

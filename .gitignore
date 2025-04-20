@@ -12,7 +12,9 @@ dist
 dist-ssr
 *.local
 
-.env
+./backend/try.js
+
+*.env
 
 # Editor directories and files
 .vscode/*

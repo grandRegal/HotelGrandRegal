@@ -22,6 +22,9 @@ module.exports = async function (){
           fetchShownReviews: async() => fetchShownReviews(database),
           getMenu: async()=>await getUMenu(database),
           getRoomList: async()=>await getRoomList(database),
+          getBanquetList : async()=>await getBanquetList(database),
+          getTarrif: async()=>await getTarrif(database),
+          getBanquetMenu : async()=>await getBanquetMenu(database),
           bookRoom: async(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost)=>await bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost,  database)
       },
       adminRequests: {
@@ -41,8 +44,7 @@ module.exports = async function (){
       }
     }
   } catch (e) {
-    console.log("error found")
-    throw e;
+    console.log("error found", e)
   }
 }
 
@@ -59,8 +61,7 @@ async function submitReview(name, contact, rating, review, database) {
 
   try {
     const status = await database.collection("user_ratings").insertOne(reviewDoc);
-    console.log(status);
-    return true;
+    console.log("addStat =", JSON.stringify(status) || status);    return true;
   } catch (err) {
     return {
       status: false
@@ -111,7 +112,6 @@ async function setFeedback(feedbackId, command, database){
       { _id: new ObjectId(feedbackId)},
       { $set: { category: command } }
     )
-    console.log(status);
     return status.modifiedCount == 1;
   }catch(err){
     console.log("err",err);
@@ -124,7 +124,6 @@ async function deleteFeedback(feedbackId, database){
     const status = await database.collection("user_ratings").deleteOne(
       { _id: new ObjectId(feedbackId)}
     )
-    console.log(status);
     return status.deletedCount == 1;
   }catch(err){
     console.log("err",err);
@@ -133,7 +132,6 @@ async function deleteFeedback(feedbackId, database){
 }
 
 async function addMenu(thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg, database) {
-  console.log("heere to add menu")
   const menu = {
     img: thumbnail,
     name: name,
@@ -144,13 +142,17 @@ async function addMenu(thumbnail, name, desc, price, cat, subCat, shefSpecial, i
     shefSpecial: shefSpecial,
     isVeg: isVeg
   };
+  console.log("heere to add menu", menu)
 
   try {
     const status = await database.collection("dineMenu").insertOne(menu);
     console.log("stat = ", status);
     return true;
   } catch (err) {
-    console.log("err", err);
+    console.log("err", err.errorResponse.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied);
+
+    console.error("🧨 Error message:", err.message);
+    console.error("🧩 Stack trace:", err.stack);
     return false
   }
 }
@@ -204,7 +206,7 @@ async function getUMenu(database){
       content: finalContent
     }
   }catch(err){
-    console.log(err);
+    console.log("eroor at getUMenu = ",err);
     return{
       status: false,
       reason: err
@@ -262,6 +264,325 @@ async function bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest,
     return{
       status: false,
       reason:"here is reason = " + err
+    }
+  }
+}
+
+async function getBanquetList(database) {
+  // return {
+  //   status: true,
+  //   content: {
+  //     blog1 : {
+  //         overview: "this is fake overview which  erview which i am entering to see how its looking on teh actual wen i am ent i am entering to see how its looking on teh actual img",
+  //         features: [
+  //             {
+  //                 logo: "",
+  //                 label: "300 peoples"
+  //             },
+  //             {
+  //                 logo: "",
+  //                 label: "250 peoples"
+  //             },
+  //             {
+  //                 logo: "",
+  //                 label: "150 peoples"
+  //             },
+  //         ], 
+  //         gallery: ["", "", "", "","", "", "", "","", "", "", ""],
+  //         price: 10000
+  //     },
+  //     blog2: {
+  //         overview: "this is fake overview which i am entering to see how its looking on teh actual wensite this is fake overview which i am entering to see how its looking on teh actual wensite",
+  //         features: [
+  //             {
+  //                 logo: "",
+  //                 label: "100 peoples"
+  //             },
+  //             {
+  //                 logo: "",
+  //                 label: "100 peoples"
+  //             },
+  //             {
+  //                 logo: "",
+  //                 label: "100 peoples"
+  //             },
+  //         ], 
+  //         gallery: ["", "", "", "","", "", "", "","", "", "", ""],
+  //         price: 500
+  //     }
+  // }
+  // }  
+
+  try{
+    let data = await database.collection("banquets").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  }catch(err){
+    return{
+      status: false,
+      reason:"here is reason = " + err.message
+    }
+  }
+}
+
+async function getTarrif(database){
+  // return {
+  //   status: true,
+  //   content: {
+  //     veg : [
+  //         {
+  //             name: "Silver",
+  //             list: [
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //             ]
+  //         },
+  //         {
+  //             name: "Gold",
+  //             list: [
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //             ]
+  //         },
+  //         {
+  //             name: "Platenium",
+  //             list: [
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //             ]
+  //         }
+  //     ],
+  //     nonveg : [
+  //         {
+  //             name: "Silver",
+  //             list: [
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "10 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "100 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "100 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1000 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1000 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //             ]
+  //         },
+  //         {
+  //             name: "Gold",
+  //             list: [
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //             ]
+  //         },
+  //         {
+  //             name: "Platenium",
+  //             list: [
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //                 {
+  //                     logo: "",
+  //                     label: "1 veg"
+  //                 },
+  //             ]
+  //         }
+  //     ]
+  // }
+  // }
+
+  try{
+    let data = await database.collection("tarrifs").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  }catch(err){
+    return{
+      status: false,
+      reason:"here is reason = " + err.message
+    }
+  }
+}
+
+async function getBanquetMenu(database) {
+  // return {
+  //   status: true,
+  //   content: [
+  //     {
+  //         cat : "hi",
+  //         thubnail : "",
+  //         items: ["Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner"]
+  //     },
+  //     {
+  //         cat : "hello",
+  //         thubnail : "",
+  //         items: ["A", "b", "c", "d"]
+  //     },
+  //     {
+  //         cat : "how",
+  //         thubnail : "",
+  //         items: ["A", "b", "c", "d"]
+  //     }
+  // ]
+  // }  
+
+  try{
+    let data = await database.collection("banquetMenu").find({}).toArray();
+    console.log("Menu Data = ", data);
+    return {
+      status: true,
+      content: data
+    }
+  }catch(err){
+    return{
+      status: false,
+      reason:"here is reason = " + err.message
     }
   }
 }

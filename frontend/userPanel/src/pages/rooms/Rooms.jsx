@@ -1,7 +1,6 @@
 import SlideShow from "../../components/slideShowCont/SlideShowCont";
 import Popup from "../../components/popup/Popup";
 
-import { getRoomList, getRoomData, getLimits , bookRoom} from '../../utils/DynamicDataFetcher';
 import {roomData} from '../../utils/StaticDataFetcher';
 import brokerLogo from './assets/broker.png';
 import selfLogo from './assets/broker.png';
@@ -405,7 +404,7 @@ export default function Rooms() {
       if(data.status){
         setRoomList(data.content);
       }else{
-        alert("something Went Wrong = ", data.reason);
+        alert("something Went Wrong = ", data.reason.message);
         console.log("fetchedData", data.reason)
       }
     }

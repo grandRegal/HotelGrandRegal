@@ -8,6 +8,8 @@ import { getRatings } from '../../utils/DynamicDataFetcher';
 
 import fetchData from '../../../../adminPanel/utils/fetcher';
 
+import StarBox from "../../components/startbox/StarBox.jsx";
+
 /* CSS Modules*/
 import headCard from './headCard.module.css';
 import showCase from './showCase.module.css';
@@ -193,24 +195,6 @@ function Map(props) {
 }
 
 function ReviewCard({ content }) {
-    const StarBox = ({ count }) => {
-        let stars = [];
-        for (let i = 1; i <= count; i++) {
-            stars.push(<img className={reviewCard.fullStar} src={full} />)
-        }
-        if (Math.round(count) < 4) {
-            stars.push(<img className={reviewCard.emptyStar} src={empty} />)
-        } else if (Math.round(count) < 8) {
-            stars.push(<img className={reviewCard.halfStar} src={half} />)
-        } else {
-            stars.push(<img className={reviewCard.fullStar} src={full} />)
-        }
-        return (
-            <div className={reviewCard.starBox}>
-                {stars}
-            </div>
-        )
-    }
 
     return (
         <div className={reviewCard.main}>

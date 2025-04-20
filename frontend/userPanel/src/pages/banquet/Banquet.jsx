@@ -1,8 +1,7 @@
 import SlideShow from "../../components/slideShowCont/SlideShowCont";
 import BlogCard from "../../components/blogCard/BlogCard";
 
-import { banquetData } from '../../utils/StaticDataFetcher';
-import { getTarrif, getBanquetMenu } from '../../utils/DynamicDataFetcher';
+import { banquetData } from "../../utils/StaticDataFetcher";
 
 import blog from './blog.module.css';
 import tarrifBox from './tarrifBox.module.css';
@@ -14,9 +13,20 @@ import billBox from './billBox.module.css';
 
 import Popup from '../../components/popup/Popup';
 
+import fetchData from '../../../../adminPanel/utils/fetcher';
+
 function TarrifBox({ tarrif }) {
+    const [banquetMenu, setBanquetMenu] = useState(null);
     useEffect(() => {
-        /*data fetching -- tarrif plan*/
+        let fetchTarrif = async()=>{
+            let data = await fetchData('getBanquetMenu', 'GET');
+            if(data.status){
+                setBanquetMenu(data.content);
+            }else{
+                alert("error" + data.reason);
+            }
+        }
+        fetchTarrif();
     }, []);
 
     const [slided, setSlided] = useState(true);
@@ -28,16 +38,16 @@ function TarrifBox({ tarrif }) {
             <div className={menuStyle.container}>
                 <ul className={menuStyle.catHolder}>
                     {
-                        menu.map((item, index) =>
+                        menu.details.map((item, index) =>
                             <li className={selectedCat == index ? menuStyle.selected : ""} onClick={() => setSelectedCat(index)}>{item.cat}</li>
                         )
                     }
                 </ul>
                 <div className={menuStyle.menuBox}>
-                    <img src={menu[selectedCat].thumbnail} alt="" />
+                    <img src={menu.details[selectedCat].thumbnail} alt="" />
                     <ul>
                         {
-                            menu[selectedCat].items.map((item) =>
+                            menu.details[selectedCat].items.map((item) =>
                                 <li>
                                     {item}
                                 </li>
@@ -49,7 +59,7 @@ function TarrifBox({ tarrif }) {
         );
     }
 
-    const TarrifView = ({ plan, list }) => {
+    const TarrifView = ({ plan, list, price }) => {
         return (
             <div style={{ height: "max-content", width: "max-content", display: "flex", alignItems: "center" }}>
                 <div className={`${tarrifBox.menuHolder} ${menuShown == null ? " " : menuShown ? tarrifBox.show : tarrifBox.hide}`}>
@@ -57,20 +67,21 @@ function TarrifBox({ tarrif }) {
                     <div className={tarrifBox.menuBox}>
                         <button className={tarrifBox.hideBtn} onClick={() => setMenuShown(false)}>Hide Menu</button>
                         <div className={tarrifBox.content}>
-                            <Menu menu={getBanquetMenu()} />
+                            {banquetMenu ? <Menu menu= {slided ? banquetMenu[0] : banquetMenu[1]} /> : '' }
                         </div>
                     </div>
                 </div>
                 <div className={tarrifBox.tarrifView}>
                     <h3 className={tarrifBox.header}>
-                        {plan} Plan
+                        {plan}
                     </h3>
+                    <h4 className={tarrifBox.price}>Rs{price} + GST</h4>
                     <div className={tarrifBox.inclutionBox}>
                         {
                             list.map((item) =>
                                 <div className={tarrifBox.inclution}>
                                     <img src={item.logo} alt="" />
-                                    <label htmlFor="">{item.label}</label>
+                                    <label htmlFor="">{item.name}</label>
                                 </div>
                             )
                         }
@@ -90,11 +101,11 @@ function TarrifBox({ tarrif }) {
             <div className={tarrifBox.tarrifList}>
                 {
                     slided ?
-                        tarrif.veg.map((plans) =>
-                            <TarrifView plan={plans.name} list={plans.list} />
+                        tarrif[0].details.map((plans) =>
+                            <TarrifView plan={plans.name} list={plans.items} price= {plans.price}/>
                         ) :
-                        tarrif.nonveg.map((plans) =>
-                            <TarrifView plan={plans.name} list={plans.list} />
+                        tarrif[1].details.map((plans) =>
+                            <TarrifView plan={plans.name} list={plans.items} price= {plans.price}/>
                         )
                 }
             </div>
@@ -294,10 +305,29 @@ function BookingForm({ tarrifDetails, extra }) {
 }
 
 export default function () {
-    const [blogData, setBlogData] = useState(true);
+    const [banquetList, setBanquetList] = useState(null);
+    const [tarrif, setTarrif] = useState(null);
     useEffect(() => {
-
-    })
+        let fetchList = async()=>{
+            let data = await fetchData('getBanquetList', 'GET');
+            if(data.status){
+                setBanquetList(data.content);
+            }else{
+                alert("error" + data.reason);
+            }
+        }
+        let fetchTarrif = async()=>{
+            let data = await fetchData('getTarrif', 'GET');
+            console.log(data);
+            if(data.status){
+                setTarrif(data.content);
+            }else{
+                alert("error" + data.reason);
+            }
+        }
+        fetchList();
+        fetchTarrif();
+    }, []);
 
     const [popUp, setPopup] = useState(null);
     const [largeImg, setLargeImg] = useState(null);
@@ -327,12 +357,12 @@ export default function () {
                         content.features.map((feature) =>
                             <div className={blog.feature}>
                                 <img src={feature.logo} alt="" />
-                                <span>{feature.label}</span>
+                                <span>{feature.name}</span>
                             </div>
                         )
                     }
                 </div>
-                <span className={blog.rate}>Rs <span>10000</span> + Catering Charges</span>
+                <span className={blog.rate}>Rs <span>{content.price}</span> + Catering Charges</span>
                 <div className={blog.buttons}>
                     <button className={blog.btn1} onClick={() => setPopup(<GalleryBox imgs={content.gallery} />)}>View Gallery</button>
                     <button className={blog.btn2} onClick={() => { setPopup(<BookingForm tarrifDetails={[[{ name: "silver" }, { name: "gold" }, { name: "platenium" }]]} extra={[{ label: "mike", logo: "" }, { label: "speaker", logo: "" }]} />) }}>Book Now</button>
@@ -345,9 +375,9 @@ export default function () {
             {popUp ? <Popup component={() => { return popUp }} onClose={() => { setPopup(null) }} /> : ""}
             <SlideShow gallery={banquetData.slideShow.gallery} content={banquetData.slideShow.body} />
             <h1 style={{ textAlign: "center", margin: "80px 80px 20px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>Celebrate With<br /></h1>
-            {blogData ? <BlogCard img1={banquetData.blogCard.img1} img2={banquetData.blogCard.img2} blog1={<Blog content={banquetData.blogCard.blog1} />} blog2={<Blog content={banquetData.blogCard.blog2} />} /> : <BlogCard blog1={<Blog />} />}
+            {banquetList ? <BlogCard img1={banquetList[0].gallery[0]} img2={banquetList[1].gallery[0]} blog1={<Blog content={banquetList[0]} />} blog2={<Blog content={banquetList[1]} />} /> : ''}
             <h1 style={{ textAlign: "center", margin: "80px 80px 20px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>Our Catering Plans<br /></h1>
-            <TarrifBox tarrif={getTarrif()} />
+            {tarrif? <TarrifBox tarrif={tarrif} /> : ''}
         </div>
     );
 }

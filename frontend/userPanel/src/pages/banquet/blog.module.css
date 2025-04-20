@@ -52,6 +52,7 @@
 .rate{
     color: rgb(15, 26, 0);
     min-width: 60%;
+    text-align: center;
 }
 
 .rate span{

@@ -31,14 +31,21 @@
 .menuHolder{
     position: absolute;
     width: 100vw;
-    max-height: 100%;
-    height: 85%;
+    height: 98%;
     right: 0px;
     display: flex;
     align-items: center;
     justify-content: start;
     gap: 0px;
     translate: calc(100% - 30px);
+}
+
+.show .menuHolder{
+    backdrop-filter: blur(2px);
+}
+
+.show .content{
+    box-shadow: 0px 0px 1000px #000000;
 }
 
 .showBtn{
@@ -74,7 +81,8 @@
 
 .content{
     min-width: 100%;
-    height: 98%;
+    min-height: max-content;
+    background-color: red;
     background-color: whitesmoke;
     border-radius: 35px 0px 0px 35px;
     padding-left: 30px;
@@ -166,6 +174,17 @@
     text-align: center;
     color: white;
     padding: 20px 10px;
+    padding-bottom: 0px;
+}
+
+.tarrifView .price{
+    background-color: #0c0000;
+    width: 100%;
+    text-align: center;
+    color: white;
+    padding: 20px 10px;
+    padding-top: 5px;
+    font-size: 0.9em;
 }
 
 .inclutionBox{
