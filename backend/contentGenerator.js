@@ -2,7 +2,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 const uri = process.env.MONGO_URI;
-const client = new MongoClient(uri, {
+const client = new MongoClient("mongodb+srv://grandregalservices:qjzn97xUZx2RVfw2@cluster0.ln8wjyr.mongodb.net/?appName=Cluster0", {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -165,7 +165,7 @@ async function getAMenu(database){
   }catch(err){
     return {
       status: false,
-      content: ack
+      content: err
     }
   }
 }

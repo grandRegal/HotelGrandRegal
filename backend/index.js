@@ -12,10 +12,17 @@ const handleImg = require('./handleImg');
 
 const Creds = require('./utils/creds'); 
 const credsData = new Creds();
+const allowedOrigins = process.env.ACCESS_URL.split(',');
 app.use(cors({
-    origin: process.env.ACCESS_URL,
-    credentials: true
+    origin: function (origin, callback) {
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    }
   }));
+  
 app.use(express.json());
 
 app.post('/api/adminLogin', (req, res) => {
