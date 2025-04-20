@@ -2,8 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 require('dotenv').config();
-const getContent = require('./contentGenerator');
-const handleImg = require('./handleImg');
+const getContent = require('./utils/contentGenerator');
+const handleImg = require('./utils/handleImg');
 const Creds = require('./utils/creds'); 
 
 
