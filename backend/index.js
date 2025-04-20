@@ -15,13 +15,18 @@ const credsData = new Creds();
 const allowedOrigins = process.env.ACCESS_URL.split(',');
 app.use(cors({
     origin: function (origin, callback) {
-      if (allowedOrigins.includes(origin)) {
+      console.log("Incoming origin:", origin);
+      console.log("Allowed origins:", allowedOrigins);
+  
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error("Blocked by CORS:", origin);
         callback(new Error('Not allowed by CORS'));
       }
     }
   }));
+  
   
 app.use(express.json());
 
