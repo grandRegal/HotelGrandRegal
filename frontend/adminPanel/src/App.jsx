@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
-const  apiURL = 'http://localhost:3000/api';
+const  apiURL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api/";
 
 import Navbar from './components/Navbar/Navbar.jsx';
 import Dashboard from './pages/dashboard/Dashboard.jsx';
