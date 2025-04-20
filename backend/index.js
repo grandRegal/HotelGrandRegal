@@ -20,19 +20,7 @@ const upload = multer({ storage: storage });
 /*CORS Logic */
 const allowedOrigins = process.env.ACCESS_URL.split(',');
 
-app.use(cors({
-    origin: function (origin, callback) {
-      console.log("Incoming origin:", origin);
-      console.log("Allowed origins:", allowedOrigins);
-  
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.error("Blocked by CORS:", origin);
-        callback(new Error('Not allowed by CORS'));
-      }
-    }
-  }));
+app.use(cors());
 
 /*User Login Logic */
 const credsData = new Creds();
