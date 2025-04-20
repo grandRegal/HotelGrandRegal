@@ -1,4 +1,4 @@
-const apiURL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api/";
+const apiURL = import.meta.env.VITE_SERVER_URL;
 
 export default async function (path, method, jsonData = null, formData= null, credentials = 'include'){
     console.log("In Fetched, Request Received");
