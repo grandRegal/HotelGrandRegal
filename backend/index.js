@@ -1,18 +1,25 @@
 const express = require('express');
 const multer = require('multer');
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 const cors = require('cors');
-const app = express();
-const PORT = 3000;
 require('dotenv').config();
-
 const getContent = require('./contentGenerator');
 const handleImg = require('./handleImg');
-
 const Creds = require('./utils/creds'); 
-const credsData = new Creds();
+
+
+/*Server Logic */
+const app = express();
+const PORT = 3000;
+app.use(express.json());
+
+
+/*Image Upload Logic */
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+/*CORS Logic */
 const allowedOrigins = process.env.ACCESS_URL.split(',');
+
 app.use(cors({
     origin: function (origin, callback) {
       console.log("Incoming origin:", origin);
@@ -26,9 +33,9 @@ app.use(cors({
       }
     }
   }));
-  
-  
-app.use(express.json());
+
+/*User Login Logic */
+const credsData = new Creds();
 
 app.post('/api/adminLogin', (req, res) => {
     let status = credsData.verifyLogin(req.body.username, req.body.pwd);
@@ -75,7 +82,7 @@ async function init(){
         console.log("Database Connection Established");
         try{
             app.listen(PORT, () => {
-                console.log(`Server running on http://localhost:${PORT}`);
+                console.log(`Server running on ${process.env.ACCESS_URL}:${PORT}`);
             });
             app.get('/api/feedbackData', async(req, res)=>{
                 console.log("|===================================|\nClient Request Received \n|===================================|\n");
