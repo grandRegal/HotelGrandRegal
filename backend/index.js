@@ -20,7 +20,19 @@ const upload = multer({ storage: storage });
 /*CORS Logic */
 const allowedOrigins = process.env.ACCESS_URL.split(',');
 
-app.use(cors());
+const corsOptions = {
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true // 👈 VERY IMPORTANT
+  };
+  
+app.use(cors(corsOptions));
+
 
 /*User Login Logic */
 const credsData = new Creds();
