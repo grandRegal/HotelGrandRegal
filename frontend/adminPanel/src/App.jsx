@@ -20,7 +20,7 @@ function App() {
       console.log("sending Login", username, pwd)
       e.preventDefault();
       console.log("I am here in app.jsc handeling");
-      fetch(apiURL + '/adminLogin', {
+      fetch(apiURL + 'adminLogin', {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -4,8 +4,9 @@ import dineMenu from './DineMenu.module.css';
 import addMenu from './AddMenu.module.css';
 import thumb from './assets/react.svg';
 import fetchData from '../../../utils/fetcher';
+import { useNavigate } from 'react-router-dom';
 
-function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpecial = false, catg = 'starter', subCateg = null}){
+function AddMenu({onAdd, img = thumb, label = null, des = null, rate = null, isShefSpecial = false,  isVeg = false, catg = 'starter', subCateg = 'Veg Soup'}){
     const [cat, setCat] = useState(catg);
     const [name, setName] = useState(label);
     const [desc, setDesc] = useState(des);
@@ -13,7 +14,7 @@ function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpec
     const [shef, setShef] = useState(isShefSpecial);
     const [sCat, setSCat] = useState(subCateg);
     const [inputImg, setImg] = useState(null);
-    const [veg, setVeg] = useState(null);
+    const [veg, setVeg] = useState(isVeg);
     const [bgImg, setBackgroundImage] = useState(thumb);
     const subCats = {
         "starter": ["Veg Soup", "Veg Starters", "Chinese Veg Starters", "Eastern Oven Tandoor", "Sizzling Sizzlers", "Chinese Veg Main", "Papad/ Salads/ Raita", "Nonveg Soup", "Non Veg Chinese Starters", "Salads"],
@@ -22,7 +23,7 @@ function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpec
         "drink" : ["Coolers", "Beverages", "Milk Shakers / Faluda"]
     }
     const handleSubmition = async(e)=>{
-        alert("Adding Menu! PLease Wait");
+        e.preventDefault();
         let textData = {
             name: name,
             desc: desc,
@@ -30,15 +31,18 @@ function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpec
             cat: cat,
             subCat: sCat,
             shefSpecial: shef,
-            isVeg: veg
+            isVeg: veg,
         }
+        console.log("textData = ", textData);
+        alert("Adding Menu! PLease Wait");
         let formData = [{key:"jsonData", value: JSON.stringify(textData)}, {key:"thumb", value: inputImg}];
-        e.preventDefault();
         let ack = await fetchData('addMenu', 'POST', null, formData);
         if(ack.status){
             alert("request Processed");
+            onAdd();
         }else{
-            alert("Err= ", ack.reason);
+            console.log("Error Reason=", ack.reason)
+            alert("Err= " + ack.reason);
         }
     }
     const handleImageChange = (e) => {
@@ -60,11 +64,11 @@ function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpec
             <div className={addMenu.box2}>
                 <textarea className={addMenu.input1} required rows={3} name="" id="" placeholder='Dish Description' onChange={(e)=>setDesc(e.target.value)}></textarea>
                 <input className={addMenu.input2} value={price} type="number" name="" id="" placeholder='price' onChange={(e)=>setPrice(e.target.value)}/>
-                <select name="" id="" onChange={(e)=>{setCat(e.target.value); setSCat(subCateg[e.target.value][0])}}>
+                <select name="" id="" onChange={(e)=>{setCat(e.target.value); setSCat(subCats[e.target.value][0])}}>
                     <option value="starter">Starters</option>
                     <option value="main">Main Course</option>
                     <option value="desert">Deserts</option>
-                    <option value="drink">Drinks</option>
+                    <option value="driAnk">Drinks</option>
                 </select>
                 <select name="" id="" onChange={(e)=>setSCat(e.target.value)}>
                     {
@@ -88,19 +92,20 @@ function AddMenu({img = thumb, label = null, des = null, rate = null, isShefSpec
 }
 
 function DineMenu(){
+    const navigate = useNavigate();
     const [overlay, setOverlay] = useState(false);
     const [menu, setMenu] = useState([{img:"#", name:"Pavbhaji", desc:"Tasty And Delicious", price:100, cat:"Main Course", subCat:"Indian", shefSpecial: true}
     ]);
+    const fetchMenu = async () => {
+        let data = await fetchData('getMenu', 'GET');
+        if (data.status) {
+            setMenu(data.content);
+        } else {
+            alert("Server Error");
+            navigate('/login')
+        }
+    };
     useEffect(() => {
-        const fetchMenu = async () => {
-            let data = await fetchData('getMenu', 'GET');
-            if (data.status) {
-                setMenu(data.content);
-            } else {
-                alert("Server Error");
-            }
-        };
-    
         fetchMenu();
     }, []);
     
@@ -111,7 +116,7 @@ function DineMenu(){
                 overlay ? 
                 <div className={dineMenu.overlay}>
                     <div className={dineMenu.exitArea} onClick={()=>setOverlay(false)}></div>
-                    <AddMenu />
+                    <AddMenu onAdd = {fetchMenu}/>
                 </div> : ''
             }
             <h2 className={dineMenu.header}>Manage Menu</h2>
