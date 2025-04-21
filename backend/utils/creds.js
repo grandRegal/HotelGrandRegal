@@ -12,7 +12,7 @@ class Creds {
     }
     verifyLogin(username, pwd) {
         if (username == this.username && pwd == this.pwd) {
-            this.cookie = this.cookie = (username + pwd + Date.now()).toString();
+            this.cookie = (username + pwd + Date.now()).toString();
             return this.cookie;
         } else {
             return false;
