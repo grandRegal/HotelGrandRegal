@@ -41,11 +41,16 @@ app.post('/api/adminLogin', (req, res) => {
     let status = credsData.verifyLogin(req.body.username, req.body.pwd);
     if (status) {
         res.cookie(
-            'loginCookie',
-            status,
-            httpOnly = true,
-            maxAge = req.body.isToRemember ? 604800000 : undefined
-        )
+  'loginCookie',
+  status,
+  {
+    httpOnly: true,
+    maxAge: req.body.isToRemember ? 604800000 : undefined,
+    secure: true,            // VERY important if you're on HTTPS
+    sameSite: 'None'         // if frontend and backend are on different domains
+  }
+);
+
         res.json({ status: true });
     } else {
         res.json({ status: false });
