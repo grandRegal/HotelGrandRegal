@@ -20,6 +20,7 @@ class Creds {
     }
 
     verifyRequest(cookie) {
+        console.log("Verifying Request", cookie, this.cookie);
         return 'loginCookie=' + this.cookie == cookie;
     }
 
