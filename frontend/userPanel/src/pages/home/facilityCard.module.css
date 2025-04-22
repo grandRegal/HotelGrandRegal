@@ -12,6 +12,7 @@
     padding-right: -130px;
     box-shadow: 5px -5px 10px #1a0f04;
     border-radius: 5px;
+    max-width: 99vw;
 }
 
 .container h2{
@@ -29,6 +30,7 @@
     font-family: caliscalistoga, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     min-width: calc(99.9% + clamp(0px, 5vw, 100px));
     margin-left: -20px;
+    max-width: 99vw;
 }
 
 .container li{
@@ -36,6 +38,7 @@
     margin: 10px;
     font-weight: 550;
     min-width: calc(100% + 40px);
+    max-width: 99vw;
 }
 
 .container img{
