@@ -45,7 +45,7 @@ function HeadCard({ img, slogan }) {
             behavior: "smooth"
         });
     }
-    timer = setTimeout(scrollDown, 5000);
+    // timer = setTimeout(scrollDown, 5000);
     return (
         <div className={headCard.container}>
             <img src={img} alt="" className={headCard.headImg} />
