@@ -155,16 +155,16 @@ function FacilitiesCard({ facilities }) {
         <div className={facilityCard.container}>
             <h2>Facilities</h2>
             <ul>
-                {
-                    facilities.map((value) =>
-                        <li><img src={tick} />{value}</li>
-                    )
-                }
+                {facilities.map((item, index) => (
+                    <li key={index}>
+                        <img src={tick} alt="tick icon" />
+                        {item}
+                    </li>
+                ))}
             </ul>
         </div>
     );
 }
-
 function Map(props) {
     return (
         <div className={map.container}>
