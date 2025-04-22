@@ -49,14 +49,18 @@
 
 /*Contact Details*/
 .super{
-    padding: 50px;
+    min-width: 300px;
+    max-width: 98vw;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 50px;
-    background-color: rgba(0, 0, 0, 0.486);
+    background-color: rgb(58, 39, 39);
     backdrop-filter: blur(5px);
+    border-radius: 35px;
+    flex: 1;
 }
 
 .header{
@@ -78,8 +82,10 @@
 }
 
 .mapBox{
-    width: 370px;
-    min-height: 200px;
+    min-width: 250px;
+    min-height: 250px;
+    flex: 1;
+    border-radius: 25px;
 }
 
 .addressHolder{
@@ -128,17 +134,19 @@
 .form{
     max-width: 98%;
     width: max-content;
-    margin: auto;
-    background: #1615157c;
+    margin: 20px;
+    background: #f8f7f7;
     backdrop-filter: blur(5px);
-    padding: 30px 80px;
+    padding: 30px 40px;
     border-radius: 25px;
+    box-shadow: 0px 0px 5px #3b1a16;
 }
 
 .form h1{
-    color: beige;
+    color: #3b1a16;
     margin-bottom: 30px;
     text-align: center;
+    border-bottom: 3px solid #3b1a16;
 }
 
 .groupHolder{
@@ -157,21 +165,23 @@
     flex-direction: column;
     gap: 5px;
     margin: 8px;
-    color: white;
+    color: black;
 }
 
 .formGroup input{
     min-width: max-content;
-    padding: 5px 20px;
+    padding: 8px 20px;
     border: 0px;
     border-radius: 5px;
+    box-shadow: 0px 0px 2px #3b1a16;
 }
 
-.formGroup select{
-    padding: 5px 20px;
+.formGroup select, .formGroup textarea{
+    padding: 8px 20px;
     background-color: white;
     border: 0px;
     border-radius: 5px;
+    box-shadow: 0px 0px 2px #3b1a16;
 }
 
 .submitButton{
@@ -180,8 +190,9 @@
     margin: 20px;
     margin-left: 50%;
     transform: translateX(-50%);
-    background-color: rgb(182, 147, 147);
+    background-color: #3b1a16;
     border: 0px;
+    color: white;
     border-radius: 15px;
     font-size: 15px;
     font-weight: bold;

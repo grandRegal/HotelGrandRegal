@@ -46,7 +46,7 @@ export const global = {
 
 export const homeData = {
     headCard: {
-        img: headCardImg,
+        img: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/407561909.jpg?k=bfd64d35567eaeb4381ca7c43de205762b9bdcf3b975acf24429f820d66f0d6a&o=&hp=1",
         slogan : "Commitment to Luxury, services and Taste"
     },
     showCaseCard: [
@@ -89,19 +89,19 @@ export const homeData = {
             body:"Indulge in a dining experience where luxury meets flavor. With impeccable hygiene, a refined ambiance, and culinary excellence, every meal is a celebration of taste and elegance.",
             features : [
                 {
-                    img:f1,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.42_PM_pehqib.jpg",
                     label:"Delicious Tasty Food"
                 },
                 {
-                    img:f2,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.42_PM_1_dnqt3z.jpg",
                     label:"Luxurious Ambiance"
                 },
                 {
-                    img:f1,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.43_PM_dif4in.jpg",
                     label:"Hygienic and Fresh"
                 },
                 {
-                    img:f2,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.43_PM_1_ftq07w.jpg",
                     label:"Exceptional Service"
                 }
             ]
@@ -113,19 +113,19 @@ export const homeData = {
             body:"Experience a perfect blend of elegance and relaxation with our thoughtfully designed rooms. From plush bedding to modern amenities, every stay is crafted for ultimate comfort and luxury",
             features : [
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313236/WhatsApp_Image_2025-04-22_at_2.40.43_PM_6_nn56ym.jpg",
                     label:"Spacious Elegant"
                 },
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313236/WhatsApp_Image_2025-04-22_at_2.40.43_PM_3_nzfaoe.jpg",
                     label:"Modern Amenities"
                 },
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.43_PM_4_o3mjkl.jpg",
                     label:"Cozy and Comfortable"
                 },
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.43_PM_5_nvr4sl.jpg",
                     label:"Breathtaking Views"
                 }
             ]
@@ -137,19 +137,19 @@ export const homeData = {
             body:"From elegant weddings to corporate gatherings, our banquet hall is designed to turn every occasion into a grand celebration. With exquisite décor and seamless service, your events become unforgettable.",
             features : [
                 {
-                    img:headCardImg,
-                    label:"Spacious andGrand"
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313235/WhatsApp_Image_2025-04-22_at_2.40.43_PM_2_g7xbbl.jpg",
+                    label:"Spacious and Grand"
                 },
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313236/WhatsApp_Image_2025-04-22_at_2.40.43_PM_7_a4yk7n.jpg",
                     label:"Elegant Décor"
                 },
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313242/WhatsApp_Image_2025-04-22_at_2.40.43_PM_8_dt7hpj.jpg",
                     label:"Premium Catering"
                 },
                 {
-                    img:headCardImg,
+                    img: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745313242/WhatsApp_Image_2025-04-22_at_2.40.43_PM_9_so2rpd.jpg",
                     label:"Seamless Arrangements"
                 }
             ]
@@ -165,20 +165,20 @@ export const homeData = {
     ],
     mapData:[
         {
-            logo: "",
+            logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745251560/image-removebg-preview_7_f9pcgz.png",
             label: "Takari Railway Station"
         },
         {
-            logo: "",
-            label: "Takari Railway Station"
+            logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745251560/image-removebg-preview_7_f9pcgz.png",
+            label: "Bhavani Nagar Railway Station"
         },
         {
-            logo: "",
-            label: "Takari Railway Station"
+            logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745251560/image-removebg-preview_7_f9pcgz.png",
+            label: "Kirloskarvadi Railway Station"
         },
         {
-            logo: "",
-            label: "Takari Railway Station"
+            logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1745251560/image-removebg-preview_6_tvyyum.png",
+            label: "Kolhapur Airport"
         },
     ]
 }

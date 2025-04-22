@@ -44,7 +44,7 @@ function TarrifBox({ tarrif }) {
                     }
                 </ul>
                 <div className={menuStyle.menuBox}>
-                    <img src={menu.details[selectedCat].thumbnail} alt="" />
+                    <img src={menu.details[selectedCat].thumb} alt="" />
                     <ul>
                         {
                             menu.details[selectedCat].items.map((item) =>
@@ -80,7 +80,7 @@ function TarrifBox({ tarrif }) {
                         {
                             list.map((item) =>
                                 <div className={tarrifBox.inclution}>
-                                    <img src={item.logo} alt="" />
+                                    <div></div>
                                     <label htmlFor="">{item.name}</label>
                                 </div>
                             )

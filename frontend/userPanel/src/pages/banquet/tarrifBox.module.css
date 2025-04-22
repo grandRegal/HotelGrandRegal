@@ -203,7 +203,9 @@
     margin: 5px;
 }
 
-.inclution img{
-    width: 20px;
+.inclution div{
+    width: 10px;
     aspect-ratio: 1 / 1;
+    background-color: #0c0000;
+    border-radius: 5px;
 }

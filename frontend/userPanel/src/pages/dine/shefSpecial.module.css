@@ -95,6 +95,7 @@
     margin: auto;
     text-align: center;
     margin-top: 30px;
+    min-height: 100px;
 }
 
 .dishBox .logo{
@@ -102,5 +103,6 @@
     height: 35px;
     border-radius: 50%;
     background-color: #3a2e2e;
+    margin-bottom: -18px;
 }
 

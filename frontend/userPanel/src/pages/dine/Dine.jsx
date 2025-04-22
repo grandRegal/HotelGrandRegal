@@ -130,7 +130,7 @@ function ShefSpecial({content}){
                         </div>
                         <h2>{dish.name}</h2>
                         <p>{dish.desc}</p>
-                        <img className={shefSpecial.logo} src="" alt="" />
+                        <img className={shefSpecial.logo} src="https://res.cloudinary.com/de9mmhibr/image/upload/v1745315013/image-removebg-preview_8_ycmght.png" alt="" />
                     </div>
                 )}
             </div>

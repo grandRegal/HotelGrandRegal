@@ -30,7 +30,7 @@ function MenuOption(props){
                 <a href="" onClick={(e)=>{clickBtn(e, '/Feedback')}}><img src={hotelLogo} alt="" onClick={(e)=>{clickBtn(e, '/Feedback')}}/> Feedback</a>
             </li>
             <li>
-                <a href="" onClick={(e)=>{clickBtn(e, '/Follow-us')}}><img src={hotelLogo} alt="" onClick={(e)=>{clickBtn(e, '/Follow-us')}}/> Follow Us</a>
+                <a href="" onClick={(e)=>{clickBtn(e, '/Follow-us')}}><img src={hotelLogo} alt="" onClick={(e)=>{clickBtn(e, '/Follow-us')}}/>Gallery</a>
             </li>
         </ul>
     );

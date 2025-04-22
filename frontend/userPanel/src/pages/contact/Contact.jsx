@@ -11,30 +11,31 @@ function FAQ() {
     <div className={style.faqContainer}>
       <h1>Frequently Asked Question</h1>
       <div>
-        <details>
-          <summary>Is Hotel Clean ?</summary>
-          <p>Definately Not Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut vero fugiat, libero nobis, iure non consectetur veritatis numquam molestias laborum dolore, repellendus tempora sequi ea.</p>
-        </details>
-        <details>
-          <summary>Is Hotel Clean ?</summary>
-          <p>Definately Not Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut vero fugiat, libero nobis, iure non consectetur veritatis numquam molestias laborum dolore, repellendus tempora sequi ea.</p>
-        </details>
-        <details>
-          <summary>Is Hotel Clean ?</summary>
-          <p>Definately Not Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut vero fugiat, libero nobis, iure non consectetur veritatis numquam molestias laborum dolore, repellendus tempora sequi ea.</p>
-        </details>
-        <details>
-          <summary>Is Hotel Clean ?</summary>
-          <p>Definately Not Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut vero fugiat, libero nobis, iure non consectetur veritatis numquam molestias laborum dolore, repellendus tempora sequi ea.</p>
-        </details>
-        <details>
-          <summary>Is Hotel Clean ?</summary>
-          <p>Definately Not Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut vero fugiat, libero nobis, iure non consectetur veritatis numquam molestias laborum dolore, repellendus tempora sequi ea.</p>
-        </details>
-        <details>
-          <summary>Is Hotel Clean ?</summary>
-          <p>Definately Not Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut vero fugiat, libero nobis, iure non consectetur veritatis numquam molestias laborum dolore, repellendus tempora sequi ea.</p>
-        </details>
+      <details>
+  <summary>What time is check-in and check-out at the hotel?</summary>
+  <p>Check-in starts at 2:00 PM and check-out is by 12:00 PM. Early check-in and late check-out may be available on request, subject to availability and extra charges.</p>
+</details>
+
+<details>
+  <summary>Is breakfast included in the room rate?</summary>
+  <p>Yes, breakfast is included in all room packages and is served daily from 7:00 AM to 10:00 AM in the dining area.</p>
+</details>
+
+<details>
+  <summary>Do you offer free Wi-Fi?</summary>
+  <p>Yes, complimentary high-speed Wi-Fi is available in all rooms and common areas for our guests.</p>
+</details>
+
+<details>
+  <summary>Is parking available at the hotel?</summary>
+  <p>Yes, we provide free on-site parking for our guests. Valet parking is also available at an additional cost.</p>
+</details>
+
+<details>
+  <summary>What is the cancellation policy?</summary>
+  <p>You can cancel your booking for free up to 24 hours before check-in. Cancellations after that may incur a one-night charge. Some special deals may have a different policy.</p>
+</details>
+
 
       </div>
     </div>
@@ -139,11 +140,15 @@ function EnquiryForm() {
   );
 };
 
+
+
 export default function () {
   return (
     <div className={style.parent}>
+      <div style={{alignItems: "center", justifyContent:"center", padding:"20px", borderRadius:"35px", display: 'flex', flexWrap:"wrap", gap:"20px",background:"#ffffff", margin:"50px auto", marginTop:"50px", width:"calc(100vw - clamp(10px, 15vw, 200px))"}}>
       <EnquiryForm />
       <ContactDetails />
+      </div>
       <FAQ />
     </div>
   );

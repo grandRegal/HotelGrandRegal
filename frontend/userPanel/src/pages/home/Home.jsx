@@ -184,7 +184,7 @@ function Map(props) {
                     <ul>
                         {
                             props.nearbyP.map((place) =>
-                                <li><img src={place.log} alt="" />{place.label}</li>
+                                <li><img src={place.logo} alt="" />{place.label}</li>
                             )
                         }
                     </ul>
@@ -205,9 +205,9 @@ function ReviewCard({ content }) {
                     <div className={reviewCard.superHolder}>
                         <div className={reviewCard.childholder}>
                             {
-                                content.map((review) => (
+                                content.map((review, index) => (
                                     <div className={reviewCard.reviewBox}>
-                                        <img className={reviewCard.dp} src={"#"} alt="" />
+                                        <img className={reviewCard.dp} src={index % 2 == 0 ? "https://res.cloudinary.com/de9mmhibr/image/upload/v1745333623/SmartSelect_20250422_202231_Chrome_sgnphv.png": "https://res.cloudinary.com/de9mmhibr/image/upload/v1745333623/SmartSelect_20250422_202238_Chrome_pkcbnk.png"} alt="" />
                                         <h6>{review.name}</h6>
                                         <p>{review.review}</p>
                                         <StarBox count={review.rating} />

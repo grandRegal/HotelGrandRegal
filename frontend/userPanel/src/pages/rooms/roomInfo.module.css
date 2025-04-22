@@ -125,17 +125,17 @@
     align-items: center;
     justify-content: start;
     /* width: 140px; */
-    flex: 1 1 160px; /* Try to be 200px wide, but flexible */
+    flex: 1 1 100px; /* Try to be 200px wide, but flexible */
     min-width: max-content;
     flex-wrap: wrap;
     font-family: sans-serif;
     font-weight: bold;
-    font-size: clamp(13px, 1.3vw, 16px)
+    font-size: clamp(10px, 1vw, 16px)
 }
 
 .aminityBox span img{
-    width: 20px;
-    height: 20px;
+    width: clamp(10px, 1vw, 16px);
+    aspect-ratio: 1 / 1;
 }
 
 .holder{

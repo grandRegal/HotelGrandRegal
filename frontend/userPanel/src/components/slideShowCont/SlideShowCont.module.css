@@ -14,7 +14,7 @@
     width: 85vw;
     max-height: 60vh;
     margin: auto;
-    margin-top: 150px;
+    margin-top: 100px;
 }
 
 .container{
@@ -32,24 +32,24 @@
 }
 
 .p{
-    font-size: clamp(30px, 4vw, 50px);
+    font-size: clamp(25px, 4vw, 40px);
     font-weight: bold;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     color: #fff;
     width: calc(100% - clamp(50px, 15%, 200px));
     text-align: center;
-    margin-top: 20px;
+    margin-top: 10px;
+    height: calc(max-content + 50px);
 }
 
 .line{
     width: clamp(100px, 30%, 200px);
-    margin-bottom: 20px;
 }
 
 @media (max-width : 775px){
     .slideShow{
         width: calc(100vw - clamp(0px, 20vw, 100px));
-        width: 100vw    ;
+        width: 100vw;
     }
     .main{
         min-width: 92%;
