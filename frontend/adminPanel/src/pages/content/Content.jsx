@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import style from './Content.module.css';
 import dineMenu from './DineMenu.module.css';
 import addMenu from './AddMenu.module.css';
-import thumb from './assets/react.svg';
 import fetchData from '../../../utils/fetcher';
 import { useNavigate } from 'react-router-dom';
 
-function AddMenu({onAdd, img = thumb, label = null, des = null, rate = null, isShefSpecial = false,  vegD = false, catg = 'starter', subCateg = 'Veg Soup'}){
+let holder = 'https://res.cloudinary.com/de9mmhibr/image/upload/v1745314468/a-minimal-ui-style-circular-button-with-_DFHCW0z7Q_-W_g-dWduNuw_VvoknBqXSAq2DjSNNTwdtg_t7d1yk.jpg';
+
+function AddMenu({onAdd, img = holder, label = null, des = null, rate = null, isShefSpecial = false,  vegD = false, catg = 'starter', subCateg = 'Veg Soup'}){
     const [cat, setCat] = useState(catg);
     const [name, setName] = useState(label);
     const [desc, setDesc] = useState(des);
@@ -15,7 +16,7 @@ function AddMenu({onAdd, img = thumb, label = null, des = null, rate = null, isS
     const [sCat, setSCat] = useState(subCateg);
     const [inputImg, setImg] = useState(null);
     const [veg, setVeg] = useState(vegD);
-    const [bgImg, setBackgroundImage] = useState(thumb);
+    const [bgImg, setBackgroundImage] = useState(img);
     const subCats = {
         "starter": ["Veg Soup", "Veg Starters", "Chinese Veg Starters", "Eastern Oven Tandoor", "Sizzling Sizzlers", "Chinese Veg Main", "Papad/ Salads/ Raita", "Nonveg Soup", "Non Veg Chinese Starters", "Salads"],
         "main": ["Veg Mains", "Dals", "Chinese Rice/ Noodles / Chopsuey", "Veg Biryani", "Non Veg Mains", "Chicken NonVeg Main", "NonVeg Rice/ Noodles", "Biryani", "Indian Breads", "Sandwiches - Plain / Grilled", "Pizza and Pasta"],

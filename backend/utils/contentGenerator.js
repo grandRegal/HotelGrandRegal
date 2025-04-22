@@ -10,7 +10,7 @@ const client = new MongoClient("mongodb+srv://grandregalservices:qjzn97xUZx2RVfw
   }
 });
 
-module.exports = async function (){
+module.exports = async function () {
   try {
     console.log("creating connection")
     await client.connect();
@@ -18,28 +18,28 @@ module.exports = async function (){
     const database = client.db("grandRegalDb");
     return {
       userReqeusts: {
-          submitReview: async(name, contact, rating, review) => await submitReview(name, contact, rating, review, database),
-          fetchShownReviews: async() => fetchShownReviews(database),
-          getMenu: async()=>await getUMenu(database),
-          getRoomList: async()=>await getRoomList(database),
-          getBanquetList : async()=>await getBanquetList(database),
-          getTarrif: async()=>await getTarrif(database),
-          getBanquetMenu : async()=>await getBanquetMenu(database),
-          bookRoom: async(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost)=>await bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost,  database)
+        submitReview: async (name, contact, rating, review) => await submitReview(name, contact, rating, review, database),
+        fetchShownReviews: async () => fetchShownReviews(database),
+        getMenu: async () => await getUMenu(database),
+        getRoomList: async () => await getRoomList(database),
+        getBanquetList: async () => await getBanquetList(database),
+        getTarrif: async () => await getTarrif(database),
+        getBanquetMenu: async () => await getBanquetMenu(database),
+        bookRoom: async (roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost) => await bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost, database)
       },
       adminRequests: {
         dashboard: {
-          getDashboard: async() => getDashboard(database),
+          getDashboard: async () => getDashboard(database),
         },
         content: {
-          addMenu: async(thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg) => await addMenu(thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg, database),
-          getMenu: async()=>await getAMenu(database),
+          addMenu: async (thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg) => await addMenu(thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg, database),
+          getMenu: async () => await getAMenu(database),
         },
         feedback: {
           getFeebacks: async () => await getFeedbacks(database),
-          deleteFeedback: async(feedbackId) => await deleteFeedback(feedbackId, database),
-          setFeedback: async(feedbackId, command) => await setFeedback(feedbackId, command, database),
-          replyFeedback: async(feedbackId, reply) => await replyFeedback(feedbackId, reply),
+          deleteFeedback: async (feedbackId) => await deleteFeedback(feedbackId, database),
+          setFeedback: async (feedbackId, command) => await setFeedback(feedbackId, command, database),
+          replyFeedback: async (feedbackId, reply) => await replyFeedback(feedbackId, reply),
         }
       }
     }
@@ -48,26 +48,6 @@ module.exports = async function (){
   }
 }
 
-async function submitReview(name, contact, rating, review, database) {
-  const ratingNum = parseInt(rating);
-  const reviewDoc = {
-    name: name,
-    contact: contact, 
-    rating: ratingNum,  
-    review: review,
-    category: "unread",
-    date: new Date()
-  };
-
-  try {
-    const status = await database.collection("user_ratings").insertOne(reviewDoc);
-    console.log("addStat =", JSON.stringify(status) || status);    return true;
-  } catch (err) {
-    return {
-      status: false
-    }
-  }
-}
 
 async function fetchShownReviews(database) {
   try {
@@ -81,9 +61,171 @@ async function fetchShownReviews(database) {
     };
   } catch (err) {
     return {
-      status: false
+      status: false,
+      reason: "Error While Fetching Shown Reviews\n Detailed Error = " + err.message
     }
-    throw err;
+  }
+}
+
+async function getUMenu(database) {
+  try {
+    let finalContent = [
+      {
+        subCatList: null,
+        itemList: []
+      },
+      {
+        subCatList: null,
+        itemList: []
+      },
+      {
+        subCatList: null,
+        itemList: []
+      },
+      {
+        subCatList: null,
+        itemList: []
+      }
+    ];
+    let categories = ["starter", "main", "desert", "drink"];
+    for (index = 0; index < 4; index++) {
+      allMenu = await database.collection("dineMenu").find({ cat: categories[index] }).toArray();
+      finalContent[index].subCatList = [...new Set(allMenu.map(item => item.subCat))];
+      for (i = 0; i < finalContent[index].subCatList.length; i++) {
+        finalContent[index].itemList.push(allMenu.filter((item) => item.subCat == finalContent[index].subCatList[i]));
+      }
+    }
+    return {
+      status: true,
+      content: finalContent
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching User Dine Menu\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function getRoomList(database) {
+  try {
+    let data = await database.collection("rooms").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching User Room List\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost, database) {
+  let dataToInsert = {
+    roomName: roomName,
+    checkIn: new Date(checkIn.slice(0, 10)),
+    checkOut: new Date(checkOut.slice(0, 10)),
+    checkInT: checkIn.slice(10),
+    checkOutT: checkOut.slice(10),
+    name: name,
+    mobile: mobile,
+    finalCost: cost,
+  };
+  if (email) dataToInsert.email = email;
+  if (message) dataToInsert.msg = message;
+  if (guest) {
+    dataToInsert.guestName = guest.map((g) =>
+      ({ name: g.fname + " " + g.lname, isChild: g.isChild })
+    )
+  }
+  if (services) {
+    dataToInsert.services = services.map(service =>
+      service.label
+    )
+  }
+  try {
+    await database.collection("room_bookings").insertOne(dataToInsert);
+    return {
+      status: true,
+      content: null
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Booking Room\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function getBanquetList(database) {
+  try {
+    let data = await database.collection("banquets").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching User BanquetList\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function getTarrif(database) {
+  try {
+    let data = await database.collection("tarrifs").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching User Tarrif\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function getBanquetMenu(database) {
+  try {
+    let data = await database.collection("banquetMenu").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching User banquet Menu\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function submitReview(name, contact, rating, review, database) {
+  const ratingNum = parseInt(rating);
+  const reviewDoc = {
+    name: name,
+    contact: contact,
+    rating: ratingNum,
+    review: review,
+    category: "unread",
+    date: new Date()
+  };
+
+  try {
+    const status = await database.collection("user_ratings").insertOne(reviewDoc);
+    return {
+      status: true,
+      content: null
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Submitting Review\n Detailed Error = " + err.message
+    }
   }
 }
 
@@ -98,36 +240,59 @@ function getDashboard() {
 }
 
 async function getFeedbacks(database) {
-  try{
-    return await database.collection("user_ratings").find({}).toArray();
-  }catch(err){
-    throw err;
+  try {
+    let data = await database.collection("user_ratings").find({}).toArray();
+    return {
+      status: true,
+      content: data
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Getting Admin Feedbacks\n Detailed Error = " + err.message
+    }
   }
 }
 
-async function setFeedback(feedbackId, command, database){
+async function setFeedback(feedbackId, command, database) {
   console.log("here", feedbackId, command);
-  try{
+  try {
     const status = await database.collection("user_ratings").updateOne(
-      { _id: new ObjectId(feedbackId)},
+      { _id: new ObjectId(feedbackId) },
       { $set: { category: command } }
     )
-    return status.modifiedCount == 1;
-  }catch(err){
-    console.log("err",err);
-    throw err;
+    return status.modifiedCount == 1 ? {
+      status: true,
+      content: null,
+    } : {
+      status: false,
+      reason: "Error While Setting Feedback\n Detailed Error = " + "The Feedback Not Found, May be deleted or not present"
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Setting Feedback\n Detailed Error = " + err.message
+    }
   }
 }
 
-async function deleteFeedback(feedbackId, database){
-  try{
+async function deleteFeedback(feedbackId, database) {
+  try {
     const status = await database.collection("user_ratings").deleteOne(
-      { _id: new ObjectId(feedbackId)}
+      { _id: new ObjectId(feedbackId) }
     )
-    return status.deletedCount == 1;
-  }catch(err){
-    console.log("err",err);
-    throw err;
+    return status.deletedCount == 1 ? {
+      status: true,
+      content: null,
+    } : {
+      status: false,
+      reason: "Error While deleting Feedback\n Detailed Error = " + "The Feedback Not Found, May be deleted or not present"
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While deleting Feedback\n Detailed Error = " + err.message
+    }
   }
 }
 
@@ -135,454 +300,39 @@ async function addMenu(thumbnail, name, desc, price, cat, subCat, shefSpecial, i
   const menu = {
     img: thumbnail,
     name: name,
-    desc: desc, 
-    price: parseInt(price),  
+    desc: desc,
+    price: parseInt(price),
     cat: cat,
     subCat: subCat,
     shefSpecial: shefSpecial,
     isVeg: isVeg
   };
-  console.log("heere to add menu", menu)
 
   try {
-    const status = await database.collection("dineMenu").insertOne(menu);
-    console.log("stat = ", status);
-    return true;
+    await database.collection("dineMenu").insertOne(menu);
+    return{
+      status: true,
+      content: null
+    }
   } catch (err) {
-    console.log("err", err.errorResponse.errInfo.details.schemaRulesNotSatisfied[0].propertiesNotSatisfied);
-
-    console.error("🧨 Error message:", err.message);
-    console.error("🧩 Stack trace:", err.stack);
-    return false
+    return {
+      status: false,
+      reason: "Error While Adding Menu\n Detailed Error = " + err.message
+    }
   }
 }
 
-async function getAMenu(database){
-  try{
+async function getAMenu(database) {
+  try {
     let ack = await database.collection('dineMenu').find({}).toArray();
     return {
       status: true,
       content: ack
     }
-  }catch(err){
+  } catch (err) {
     return {
       status: false,
-      content: err
-    }
-  }
-}
-
-async function getUMenu(database){
-  try{
-    let finalContent = [
-      {
-        subCatList: null, 
-        itemList:[]
-      },
-      {
-        subCatList: null, 
-        itemList:[]
-      },
-      {
-        subCatList: null, 
-        itemList:[]
-      },
-      {
-        subCatList: null, 
-        itemList:[]
-      }
-    ];
-    let categories = ["starter", "main", "desert", "drink"];
-    for(index=0; index<4; index++){
-      allMenu= await database.collection("dineMenu").find({ cat: categories[index]}).toArray();
-      finalContent[index].subCatList = [...new Set(allMenu.map(item => item.subCat))];
-      for(i=0; i<finalContent[index].subCatList.length; i++){
-        finalContent[index].itemList.push(allMenu.filter((item)=>item.subCat == finalContent[index].subCatList[i]));
-      }
-    }
-    console.log("fetched Menu", finalContent);
-    return{
-      status: true,
-      content: finalContent
-    }
-  }catch(err){
-    console.log("eroor at getUMenu = ",err);
-    return{
-      status: false,
-      reason: err
-    }
-  }
-}
-
-async function getRoomList(database){
-  try{
-    let data = await database.collection("rooms").find({}).toArray();
-    console.log("RoomData= ", data);
-    return {
-      status: true,
-      content: data
-    }
-  }catch(err){
-    return{
-      status: false,
-      reason:"here is reason = " + err
-    }
-  }
-}
-
-async function bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost, database){
-  // console.log(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost)
-  let dataToInsert = {
-    roomName: roomName,
-    checkIn : new Date(checkIn.slice(0, 10)),
-    checkOut : new Date(checkOut.slice(0, 10)),
-    checkInT: checkIn.slice(10),
-    checkOutT : checkOut.slice(10),
-    name: name,
-    mobile: mobile,
-    finalCost: cost,
-  };
-  if(email) dataToInsert.email = email;
-  if(message) dataToInsert.msg = message;
-  if(guest){
-    dataToInsert.guestName = guest.map((g)=>
-    ({name: g.fname + " " + g.lname, isChild: g.isChild})
-    )
-  }
-  if(services){
-    dataToInsert.services = services.map(service=>
-      service.label
-    )
-  }
-  try{
-    let data = await database.collection("room_bookings").insertOne(dataToInsert);
-    return {
-      status: true,
-      content: null
-    }
-  }catch(err){
-    return{
-      status: false,
-      reason:"here is reason = " + err
-    }
-  }
-}
-
-async function getBanquetList(database) {
-  // return {
-  //   status: true,
-  //   content: {
-  //     blog1 : {
-  //         overview: "this is fake overview which  erview which i am entering to see how its looking on teh actual wen i am ent i am entering to see how its looking on teh actual img",
-  //         features: [
-  //             {
-  //                 logo: "",
-  //                 label: "300 peoples"
-  //             },
-  //             {
-  //                 logo: "",
-  //                 label: "250 peoples"
-  //             },
-  //             {
-  //                 logo: "",
-  //                 label: "150 peoples"
-  //             },
-  //         ], 
-  //         gallery: ["", "", "", "","", "", "", "","", "", "", ""],
-  //         price: 10000
-  //     },
-  //     blog2: {
-  //         overview: "this is fake overview which i am entering to see how its looking on teh actual wensite this is fake overview which i am entering to see how its looking on teh actual wensite",
-  //         features: [
-  //             {
-  //                 logo: "",
-  //                 label: "100 peoples"
-  //             },
-  //             {
-  //                 logo: "",
-  //                 label: "100 peoples"
-  //             },
-  //             {
-  //                 logo: "",
-  //                 label: "100 peoples"
-  //             },
-  //         ], 
-  //         gallery: ["", "", "", "","", "", "", "","", "", "", ""],
-  //         price: 500
-  //     }
-  // }
-  // }  
-
-  try{
-    let data = await database.collection("banquets").find({}).toArray();
-    return {
-      status: true,
-      content: data
-    }
-  }catch(err){
-    return{
-      status: false,
-      reason:"here is reason = " + err.message
-    }
-  }
-}
-
-async function getTarrif(database){
-  // return {
-  //   status: true,
-  //   content: {
-  //     veg : [
-  //         {
-  //             name: "Silver",
-  //             list: [
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //             ]
-  //         },
-  //         {
-  //             name: "Gold",
-  //             list: [
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //             ]
-  //         },
-  //         {
-  //             name: "Platenium",
-  //             list: [
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //             ]
-  //         }
-  //     ],
-  //     nonveg : [
-  //         {
-  //             name: "Silver",
-  //             list: [
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "10 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "100 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "100 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1000 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1000 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //             ]
-  //         },
-  //         {
-  //             name: "Gold",
-  //             list: [
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //             ]
-  //         },
-  //         {
-  //             name: "Platenium",
-  //             list: [
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //                 {
-  //                     logo: "",
-  //                     label: "1 veg"
-  //                 },
-  //             ]
-  //         }
-  //     ]
-  // }
-  // }
-
-  try{
-    let data = await database.collection("tarrifs").find({}).toArray();
-    return {
-      status: true,
-      content: data
-    }
-  }catch(err){
-    return{
-      status: false,
-      reason:"here is reason = " + err.message
-    }
-  }
-}
-
-async function getBanquetMenu(database) {
-  // return {
-  //   status: true,
-  //   content: [
-  //     {
-  //         cat : "hi",
-  //         thubnail : "",
-  //         items: ["Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner", "Paneer Shorma", "kaju kari", "buttur masala", "shahi panner"]
-  //     },
-  //     {
-  //         cat : "hello",
-  //         thubnail : "",
-  //         items: ["A", "b", "c", "d"]
-  //     },
-  //     {
-  //         cat : "how",
-  //         thubnail : "",
-  //         items: ["A", "b", "c", "d"]
-  //     }
-  // ]
-  // }  
-
-  try{
-    let data = await database.collection("banquetMenu").find({}).toArray();
-    console.log("Menu Data = ", data);
-    return {
-      status: true,
-      content: data
-    }
-  }catch(err){
-    return{
-      status: false,
-      reason:"here is reason = " + err.message
+      reason: "Error While Getting Admin Menu\n Detailed Error = " + err.message
     }
   }
 }
