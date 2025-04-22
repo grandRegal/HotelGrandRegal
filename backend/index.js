@@ -57,8 +57,12 @@ async function init() {
                         res.cookie(
                             'loginCookie',
                             status,
-                            httpOnly = true,
-                            maxAge = req.body.isToRemember ? 604800000 : undefined
+                            {
+                                httpOnly : true,
+                                maxAge : req.body.isToRemember ? 604800000 : undefined,
+                                secure: true,
+                                sameSite: 'none'
+                            }
                         )
                         res.json({ status: true });
                     } else {
