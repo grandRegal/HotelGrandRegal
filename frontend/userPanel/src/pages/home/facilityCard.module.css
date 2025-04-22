@@ -1,6 +1,5 @@
 .container{
     width: calc(100vw - clamp(30px, 15vw, 200px));
-    max-width: 99vw;
     display: flex;
     margin: auto;
     justify-content: left;
@@ -13,6 +12,7 @@
     box-shadow: 5px -5px 10px #1a0f04;
     border-radius: 5px;
     max-width: 99vw;
+    position: relative;
 }
 
 .container h2{
@@ -20,8 +20,9 @@
     font-size: 30px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     rotate: 180deg;
-    margin-left: -122px;
     color: #aa792e;
+    position: absolute;
+    left: -22px;
 }
 
 .container ul{
@@ -29,8 +30,7 @@
     color: rgb(231, 218, 200);
     font-family: caliscalistoga, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     min-width: calc(99.9% + clamp(0px, 5vw, 100px));
-    margin-left: -20px;
-    max-width: 99vw;
+    margin-left: -52px;
 }
 
 .container li{
