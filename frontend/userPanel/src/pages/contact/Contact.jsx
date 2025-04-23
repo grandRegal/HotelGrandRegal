@@ -1,5 +1,5 @@
 import style from './Contact.module.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import fb from './assets/fb.png';
 import insta from './assets/insta.png';
@@ -143,6 +143,9 @@ function EnquiryForm() {
 
 
 export default function () {
+      useEffect(() => {
+            window.scrollTo(0, 0);
+          }, []);
   return (
     <div className={style.parent}>
       <div style={{alignItems: "center", justifyContent:"center", padding:"20px", borderRadius:"35px", display: 'flex', flexWrap:"wrap", gap:"20px",background:"#ffffff", margin:"50px auto", marginTop:"-30px", width:"calc(100vw - clamp(10px, 15vw, 200px))"}}>

@@ -18,11 +18,11 @@ import fetchData from '../../../../adminPanel/utils/fetcher';
 function TarrifBox({ tarrif }) {
     const [banquetMenu, setBanquetMenu] = useState(null);
     useEffect(() => {
-        let fetchTarrif = async()=>{
+        let fetchTarrif = async () => {
             let data = await fetchData('getBanquetMenu', 'GET');
-            if(data.status){
+            if (data.status) {
                 setBanquetMenu(data.content);
-            }else{
+            } else {
                 alert("error" + data.reason);
             }
         }
@@ -67,7 +67,7 @@ function TarrifBox({ tarrif }) {
                     <div className={tarrifBox.menuBox}>
                         <button className={tarrifBox.hideBtn} onClick={() => setMenuShown(false)}>Hide Menu</button>
                         <div className={tarrifBox.content}>
-                            {banquetMenu ? <Menu menu= {slided ? banquetMenu[0] : banquetMenu[1]} /> : '' }
+                            {banquetMenu ? <Menu menu={slided ? banquetMenu[0] : banquetMenu[1]} /> : ''}
                         </div>
                     </div>
                 </div>
@@ -102,10 +102,10 @@ function TarrifBox({ tarrif }) {
                 {
                     slided ?
                         tarrif[0].details.map((plans) =>
-                            <TarrifView plan={plans.name} list={plans.items} price= {plans.price}/>
+                            <TarrifView plan={plans.name} list={plans.items} price={plans.price} />
                         ) :
                         tarrif[1].details.map((plans) =>
-                            <TarrifView plan={plans.name} list={plans.items} price= {plans.price}/>
+                            <TarrifView plan={plans.name} list={plans.items} price={plans.price} />
                         )
                 }
             </div>
@@ -162,17 +162,17 @@ function BookingForm({ tarrifDetails, extra }) {
     }
 
     const handleFormSubmition = (e) => {
-        const Bill = ()=>{
+        const Bill = () => {
             return (
                 <div className={billBox.container}>
-                    <table  className={billBox.table}>
+                    <table className={billBox.table}>
                         <tbody>
                             <tr className={billBox.header1}>
-                                <td colSpan={4}>    
-                                    Hall Cost 
+                                <td colSpan={4}>
+                                    Hall Cost
                                 </td>
                             </tr>
-                            <tr  className={billBox.header2}>
+                            <tr className={billBox.header2}>
                                 <td colSpan={4}>Majestic Hall</td>
                             </tr>
                             <tr className={billBox.values}>
@@ -186,7 +186,7 @@ function BookingForm({ tarrifDetails, extra }) {
                                     Catering Cost
                                 </td>
                             </tr>
-                            <tr  className={billBox.header2}>
+                            <tr className={billBox.header2}>
                                 <td colSpan={4}>Veg Silver Plan</td>
                             </tr>
                             <tr className={billBox.values}>
@@ -197,10 +197,10 @@ function BookingForm({ tarrifDetails, extra }) {
                             </tr>
                             <tr className={billBox.header1}>
                                 <td colSpan={4}>
-                                    Extra Services 
+                                    Extra Services
                                 </td>
                             </tr>
-                            <tr  className={billBox.header2}>
+                            <tr className={billBox.header2}>
                                 <td colSpan={4}>Speaker</td>
                             </tr>
                             <tr className={billBox.values}>
@@ -229,7 +229,7 @@ function BookingForm({ tarrifDetails, extra }) {
     }
     return (
         <div className={formStyle.container}>
-           {bill ? <InnerPopup component={bill} onClose={()=>setBill(null)}/>: ""}
+            {bill ? <InnerPopup component={bill} onClose={() => setBill(null)} /> : ""}
             <form className={formStyle.form} onSubmit={(e) => { handleFormSubmition(e) }}>
                 <Header title={"Ceremony Dates"} />
                 <div className={formStyle.dates}>
@@ -308,26 +308,29 @@ export default function () {
     const [banquetList, setBanquetList] = useState(null);
     const [tarrif, setTarrif] = useState(null);
     useEffect(() => {
-        let fetchList = async()=>{
+        let fetchList = async () => {
             let data = await fetchData('getBanquetList', 'GET');
-            if(data.status){
+            if (data.status) {
                 setBanquetList(data.content);
-            }else{
+            } else {
                 alert("error" + data.reason);
             }
         }
-        let fetchTarrif = async()=>{
+        let fetchTarrif = async () => {
             let data = await fetchData('getTarrif', 'GET');
             console.log(data);
-            if(data.status){
+            if (data.status) {
                 setTarrif(data.content);
-            }else{
+            } else {
                 alert("error" + data.reason);
             }
         }
         fetchList();
         fetchTarrif();
     }, []);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [banquetList]);
 
     const [popUp, setPopup] = useState(null);
     const [largeImg, setLargeImg] = useState(null);
@@ -377,7 +380,7 @@ export default function () {
             <h1 style={{ textAlign: "center", margin: "80px 80px 20px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>Celebrate With<br /></h1>
             {banquetList ? <BlogCard img1={banquetList[0].gallery[0]} img2={banquetList[1].gallery[0]} blog1={<Blog content={banquetList[0]} />} blog2={<Blog content={banquetList[1]} />} /> : ''}
             <h1 style={{ textAlign: "center", margin: "80px 80px 20px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>Our Catering Plans<br /></h1>
-            {tarrif? <TarrifBox tarrif={tarrif} /> : ''}
+            {tarrif ? <TarrifBox tarrif={tarrif} /> : ''}
         </div>
     );
 }
