@@ -145,9 +145,9 @@ function EnquiryForm() {
 export default function () {
   return (
     <div className={style.parent}>
-      <div style={{alignItems: "center", justifyContent:"center", padding:"20px", borderRadius:"35px", display: 'flex', flexWrap:"wrap", gap:"20px",background:"#ffffff", margin:"50px auto", marginTop:"50px", width:"calc(100vw - clamp(10px, 15vw, 200px))"}}>
-      <EnquiryForm />
+      <div style={{alignItems: "center", justifyContent:"center", padding:"20px", borderRadius:"35px", display: 'flex', flexWrap:"wrap", gap:"20px",background:"#ffffff", margin:"50px auto", marginTop:"-30px", width:"calc(100vw - clamp(10px, 15vw, 200px))"}}>
       <ContactDetails />
+      <EnquiryForm />
       </div>
       <FAQ />
     </div>

@@ -6,6 +6,7 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     margin: 150px auto;
+    margin-bottom: 0px;
 }
 
 .header{

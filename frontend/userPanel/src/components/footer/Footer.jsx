@@ -16,7 +16,6 @@ export default function Footer(){
                         Hotel Grand Regal
                     </span>
                 </div>
-                {/* <div className={style.vl}></div> */}
                 <div id = {style.address}>
                     <span>88/7B/2A, NEAR EAGLE WAY BRIDGE, KOLHAPUR ROAD, ISLAMPUR, SANGLI-415409, MAHARASHTRA</span>
                     <hr />
@@ -27,9 +26,8 @@ export default function Footer(){
                         <img src={wp} alt="" />
                     </div>
                     <a href='mailto:hotelgrandregal@gmail.com'>hotelgrandregal@gmail.com</a>
-                    <span><a href="918421086416">8421086416</a>   <a href="918421086416">| 023422560000</a></span>
+                    <address><a href="918421086416">8421086416</a>   <a href="918421086416">| 023422560000</a></address>
                 </div>
-                {/* <div className={style.vl}></div> */}
                 <div id = {style.quickLinks}>
                     <span>
                         <img src={link} alt="" />
@@ -43,7 +41,6 @@ export default function Footer(){
                         <li>Enquiry</li>
                     </ul>
                 </div>
-                {/* <div className={style.vl}></div> */}
                 <div id = {style.belives}>
                     <span>
                         <img src={link} alt="" />
@@ -54,7 +51,7 @@ export default function Footer(){
                     </p>
                 </div>
             </div>
-            <p id={style.copyright}>&copy; 2024 Hotel Grand Regal.  All Rights Reserved.</p>
+            <p id={style.copyright}>&copy; 2025 Hotel Grand Regal.  All Rights Reserved.</p>
         </footer>
     );
 }

@@ -22,9 +22,8 @@
     flex-direction: column;
     align-items: center;
     gap: 100px;
-    padding: 50px;
+    padding: 0px 50px 50px 50px;
     box-shadow: 5px 5px 5px 5px 5px white;
-    /* background: greenyellow; */
     box-shadow: 0 0 100px #534242;
 }
 
