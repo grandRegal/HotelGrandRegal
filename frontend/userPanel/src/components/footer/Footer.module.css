@@ -75,8 +75,9 @@
 }
 
 #quickLinks{
-    max-width: 7em;
+    /* max-width: 1em; */
     color: white;
+    width: max-content;
 }
 
 #quickLinks img{
@@ -94,6 +95,8 @@
 #quickLinks ul{
     padding: 10px 35px;
     max-width: max-content;
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 #belives{
@@ -123,7 +126,7 @@
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
     padding: 5px 50px;
-    margin-bottom: -30px;
+    margin-bottom: 0px;
     color: white;
     font-weight: bold;
     font-size: 15px;
