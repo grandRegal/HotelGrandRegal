@@ -49,6 +49,10 @@ async function init() {
                 console.log(`Server running on ${process.env.ACCESS_URL}:${PORT}`);
             });
 
+            app.get('/ping', (req, res)=>{
+                res.send("Ping Successful " + new Date());
+            });
+
             /*Admin Requests */
             app.post('/api/adminLogin', (req, res) => {
                 if (req.body.username && req.body.pwd) {
