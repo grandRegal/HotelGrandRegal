@@ -20,15 +20,15 @@ export default function Footer() {
                     <span>88/7B/2A, NEAR EAGLE WAY BRIDGE, KOLHAPUR ROAD, ISLAMPUR, SANGLI-415409, MAHARASHTRA</span>
                     <hr />
                     <div>
-                        <img src={fb} alt="" />
-                        <img src={insta} alt="" />
-                        <img src={x} alt="" />
-                        <img src={wp} alt="" />
+                        <a href='https://www.facebook.com/grandregal22/'><img src={fb} alt="" /></a>
+                        <a href='https://www.instagram.com/hotel_grandregal/?hl=en'><img src={insta} alt="" /></a>
+                        <a href='https://www.facebook.com/grandregal22/'><img src={x} alt="" /></a>
+                        <a href='https://wa.me/+919822341166'><img src={wp} alt="" /></a>
                     </div>
-                    <a href='mailto:hotelgrandregal@gmail.com'>hotelgrandregal@gmail.com</a>
-                    <address><a href="918421086416">8421086416</a>   <a href="918421086416">| 023422560000</a></address>
+                    <a href='mailto:grandregal1431@gmail.com'>grandregal1431@gmail.com</a>
+                                <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="917209210406">| 7209210406</a></span>
                 </div>
-                <div style={{display:"flex", flexWrap:"wrap", gap:"3em", justifyContent:"center"}}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "3em", justifyContent: "center" }}>
                     <div id={style.quickLinks}>
                         <span>
                             <img src={link} alt="" />

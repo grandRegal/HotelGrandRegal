@@ -5,6 +5,7 @@ import fb from './assets/fb.png';
 import insta from './assets/insta.png';
 import x from './assets/x.png';
 import wp from './assets/wp.png';
+import fetchData from '../../../../adminPanel/utils/fetcher';
 
 function FAQ() {
   return (
@@ -59,13 +60,13 @@ function ContactDetails() {
             <span>88/7B/2A, NEAR EAGLE WAY BRIDGE, KOLHAPUR ROAD, ISLAMPUR, SANGLI-415409, MAHARASHTRA</span>
             <hr />
             <div className={style.sMedia}>
-              <a href=''><img src={fb} alt="" /></a>
-              <a href=''><img src={insta} alt="" /></a>
-              <a href=''><img src={x} alt="" /></a>
-              <a href=''><img src={wp} alt="" /></a>
+              <a href='https://www.facebook.com/grandregal22/'><img src={fb} alt="" /></a>
+              <a href='https://www.instagram.com/hotel_grandregal/?hl=en'><img src={insta} alt="" /></a>
+              <a href='https://www.facebook.com/grandregal22/'><img src={x} alt="" /></a>
+              <a href='https://wa.me/+919822341166'><img src={wp} alt="" /></a>
             </div>
-            <a href='mailto:hotelgrandregal@gmail.com'>hotelgrandregal@gmail.com</a>
-            <span className={style.mob}><a href="918421086416">8421086416</a>   <a href="918421086416">| 023422560000</a></span>
+            <a href='mailto:grandregal1431@gmail.com'>grandregal1431@gmail.com</a>
+            <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="917209210406">| 7209210406</a></span>
           </div>
         </div>
       </div>
@@ -75,11 +76,11 @@ function ContactDetails() {
 
 function EnquiryForm() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fname: "",
+    lname: "",
     mobile: "",
     email: "",
-    enquiryReason: "",
+    reason: "",
     message: ""
   });
 
@@ -87,9 +88,11 @@ function EnquiryForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Enquiry Submitted:", formData);
+    let ack = await fetchData('enquire', 'POST', formData);
+    if(ack.status)  alert("Enquiry Submited Successfully");
+    else alert("Something Went Wrong " + ack.reason);
   };
 
   return (
@@ -98,12 +101,12 @@ function EnquiryForm() {
           <div className={style.groupHolder}>
             <div className={style.formGroup}>
               <label>First Name:</label>
-              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required />
+              <input type="text" name="fname" value={formData.fname} onChange={handleChange} required />
             </div>
 
             <div className={style.formGroup}>
               <label>Last Name:</label>
-              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required />
+              <input type="text" name="lname" value={formData.lname} onChange={handleChange} required />
             </div>
           </div>
 
@@ -121,7 +124,7 @@ function EnquiryForm() {
 
           <div className={style.formGroup}>
             <label>Enquiry Reason:</label>
-            <select name="enquiryReason" value={formData.enquiryReason} onChange={handleChange} required>
+            <select name="reason" value={formData.reason} onChange={handleChange} required>
               <option value="">Select a reason</option>
               <option value="General Query">General Query</option>
               <option value="Support">Support</option>

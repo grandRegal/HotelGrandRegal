@@ -7,6 +7,8 @@ import Navbar from './components/Navbar/Navbar.jsx';
 import Dashboard from './pages/dashboard/Dashboard.jsx';
 import Content from './pages/content/Content.jsx';
 import Feedback from './pages/feedback/Feedback.jsx';
+import Enquiry from './pages/enquiry/Enquiry.jsx';
+import Booking from './pages/booking/Booking.jsx';
 
 function App() {
   console.log("I am here in app.jsc handeling");
@@ -74,15 +76,15 @@ function App() {
     <Navbar />
       <div>
         <div id="mainContentDiv">
-          hi
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/" element={<Dashboard />} />
+            <Route path="/bookings" element={<Booking />} />
             <Route path="/content" element={<Content />} />
-            <Route path="/feedback" element={<Feedback />} /> 
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/enquiry" element={<Enquiry />} />  
           </Routes>
         </div>
-        {/* <Footer /> */}
       </div>
     </BrowserRouter>
   );

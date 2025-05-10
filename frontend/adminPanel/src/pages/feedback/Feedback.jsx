@@ -10,9 +10,10 @@ export default function Feedback() {
     const [selectedCategory, setSelected] = useState('all');
     const navigate = useNavigate();
     const refresh = async()=>{
-        let responce = await fetchData('feedbackData', 'GET')
+        let responce = await fetchData('feedbackData', 'GET');
+        console.log("Feedback data Fetched = ", responce);
         if (responce.status){
-            setData(responce.content);
+            setData(responce.content.content);
         }   
         else{
             alert("Failed To Fetch Live Data with Error = " + responce.reason)
@@ -53,6 +54,7 @@ export default function Feedback() {
     }
 
     const getRows = ()=>{
+        console.log("here", data);
         let rowData = data.filter((allReview) => (allReview.category == selectedCategory || selectedCategory == 'all')).map((review, index) =>
             <tr className={style.tr}>
                 <td>{index+1}</td>

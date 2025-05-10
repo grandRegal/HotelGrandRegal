@@ -1,9 +1,9 @@
 import SlideShow from "../../components/slideShowCont/SlideShowCont";
 import Popup from "../../components/popup/Popup";
 
-import {roomData} from '../../utils/StaticDataFetcher';
+import { roomData } from '../../utils/StaticDataFetcher';
 import brokerLogo from './assets/broker.png';
-import selfLogo from './assets/broker.png';
+import selfLogo from '/home/lucifer/Pictures/Screenshots/p.png';
 import fetchData from '../../../../adminPanel/utils/fetcher';
 
 import roomCatelog from './roomCatelog.module.css';
@@ -36,7 +36,7 @@ function RoomCatelog({ content, onView }) {
             <img className={roomCatelog.thumbnail} src={roomInfoData.gallery[0]} alt="" />
             <h2 className={roomCatelog.name}>{roomInfoData.name}</h2>
             <p className={roomCatelog.desc}>{roomInfoData.briefInfo}</p>
-            <Features ammenities	={roomInfoData.ammenities	} />
+            <Features ammenities={roomInfoData.ammenities} />
             <div className={roomCatelog.priceBox}>
               <span className={roomCatelog.price}>
                 &#8377;&nbsp;<span>{roomInfoData.price}</span>&nbsp;/&nbsp;night
@@ -103,7 +103,7 @@ function RoomInfo({ info, onExit }) {
             )
           }
         </div>
-        <button onClick={() => { setPopup(<BookRoomStep1 brokerLink="https://a.com" onBookRequest={() => { setPopup(<BookRoomStep2 limitData={{name: info.name, price:info.price, adult: 2, child:0, extra: info.extraFeatures}} />) }} />) }}>Book Now</button>
+        <button onClick={() => { setPopup(<BookRoomStep1 brokerLink={roomInfo.broker} onBookRequest={() => { setPopup(<BookRoomStep2 limitData={{ name: info.name, price: info.price, adult: 2, child: 0, extra: info.extraFeatures }} />) }} />) }}>Book Now</button>
       </div>
     </div>
   );
@@ -114,7 +114,7 @@ function BookRoomStep1({ brokerLink, onBookRequest }) {
     <div className={book.container}>
       <h3>Book Room With</h3>
       <div className={book.holder}>
-        <a href={brokerLink}>
+        <a target='_blank' href={brokerLink || "https://www.makemytrip.com/hotels/grand_regal-details-uran_islampur.html"}>
           <span>
             <img src={brokerLogo} alt="" />
             <ul>
@@ -136,7 +136,7 @@ function BookRoomStep1({ brokerLink, onBookRequest }) {
   )
 }
 
-function BookRoomStep2({limitData}) {
+function BookRoomStep2({ limitData }) {
   let currentDate = new Date();
   let tomorrow = new Date(currentDate);
   tomorrow.setDate(currentDate.getDate() + 1);
@@ -190,9 +190,9 @@ function BookRoomStep2({limitData}) {
     setPopup(<NewGuest onAddRequest={handleNewGuest} />);
   }
 
-  const handleNext = ()=>{
+  const handleNext = () => {
     let formJSON = {
-      roomName : limitData.name,
+      roomName: limitData.name,
       checkIn: checkIn + " " + checkInT,
       checkOut: checkOut + " " + checkOutT,
       fName: fname,
@@ -203,37 +203,36 @@ function BookRoomStep2({limitData}) {
       services: services,
       msg: msg
     }
-    if(!(formJSON.fName && formJSON.lName)){
+    if (!(formJSON.fName && formJSON.lName)) {
       setVerification("Please Enter Your First/ Last Name");
       return;
     }
-    if(!/^[6789]\d{9}$/.test(formJSON.mobile)){
+    if (!/^[6789]\d{9}$/.test(formJSON.mobile)) {
       setVerification("Please Enter Valid Mobile Number");
       return;
     }
-    if(formJSON.email){
-      if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formJSON.email))
-        setVerification("Please Enter Valid Email Id");
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formJSON.email)) {
+      setVerification("Please Enter Valid Email Id");
       return;
     }
-    console.log("Services=", typeof(checkIn));
-    setPopup(<FinalReview roomName = {formJSON.roomName} formData = {formJSON} rate = {limitData.price} nightCount = {(new Date(checkOut).getTime()-new Date(checkIn).getTime())/86400000} services= {formJSON.services}/>);
+    console.log("Services=", typeof (checkIn));
+    setPopup(<FinalReview roomName={formJSON.roomName} formData={formJSON} rate={limitData.price} nightCount={1 + (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000} services={formJSON.services} />);
   }
 
-  const handleCnfrmBook = async(data, finalAmount)=>{
-    setPopup(<h3 style={{width:"260px", padding:"0px 30px", textAlign:"center", paddingBottom:"20px"}}>Sending Booking Request... <br/>Please Wait</h3>)
+  const handleCnfrmBook = async (data, finalAmount) => {
+    setPopup(<h3 style={{ width: "260px", padding: "0px 30px", textAlign: "center", paddingBottom: "20px" }}>Sending Booking Request... <br />Please Wait</h3>)
     /*send Booking request */
     data.cost = finalAmount;
     const bookingConfirmation = await fetchData('bookRoom', 'POST', data);
-    let popupContent = !bookingConfirmation.status ?  
-    <div style={{width:"280px", padding:"0px 20px", paddingBottom:"20px", marginTop:"-15px"}}>
-      <h3>Booking Request Failed !</h3>
-      <p style={{textAlign:"center", color:"red"}}>Reason : {bookingConfirmation.reason}</p>
-    </div> : 
-    <div style={{width:"260px", padding:"10px 20px", marginTop:"-20px"}}>
-      <h3>Booking Request Sent !</h3>
-      <p style={{textAlign:"center", color:"red"}}>Note : Your Booking is not confirmed yet, Our end will confirm booking and will let you now within hour</p>
-    </div>
+    let popupContent = !bookingConfirmation.status ?
+      <div style={{ width: "280px", padding: "0px 20px", paddingBottom: "20px", marginTop: "-15px" }}>
+        <h3>Booking Request Failed !</h3>
+        <p style={{ textAlign: "center", color: "red" }}>Reason : {bookingConfirmation.reason}</p>
+      </div> :
+      <div style={{ width: "260px", padding: "10px 20px", marginTop: "-20px" }}>
+        <h3>Booking Request Sent !</h3>
+        <p style={{ textAlign: "center", color: "red" }}>Note : Your Booking is not confirmed yet, Our end will confirm booking and will let you now within hour</p>
+      </div>
     setTimeout(() => {
       setPopup(popupContent);
     }, 1000);
@@ -260,11 +259,11 @@ function BookRoomStep2({limitData}) {
     );
   }
 
-  const FinalReview = (props)=>{
-  let cost  = props.rate * props.nightCount ;
-  props.services.forEach(service => {
-   cost += (service.rate * props.nightCount)
-  });
+  const FinalReview = (props) => {
+    let cost = props.rate * props.nightCount;
+    props.services.forEach(service => {
+      cost += (service.rate * props.nightCount)
+    });
     return (
       <div className={book.billHolder}>
         <h2>Bill Preview</h2>
@@ -283,7 +282,7 @@ function BookRoomStep2({limitData}) {
               <td className={book.billHeader} colSpan={3}>Extra Services Charge</td>
             </tr>
             {
-              props.services.map((service)=>
+              props.services.map((service) =>
                 <tr className={book.billValueHeader}>
                   <td>{service.label}</td>
                   <td>{service.rate}x {props.nightCount} night(s)</td>
@@ -308,11 +307,11 @@ function BookRoomStep2({limitData}) {
             <tr className={`${book.billValueHeader} ${book.finalAmount}`}>
               <td>Total</td>
               <td>12% GST</td>
-              <td>&#8377;{Math.floor(cost /100 * 112)}</td>
+              <td>&#8377;{Math.floor(cost / 100 * 112)}</td>
             </tr>
           </tbody>
         </table>
-        <button className={book.cnfrmBtn} onClick={()=>{handleCnfrmBook(props.formData, cost)}}>Book Request</button>
+        <button className={book.cnfrmBtn} onClick={() => { handleCnfrmBook(props.formData, cost / 100 * 112) }}>Book Request</button>
       </div>
     );
   }
@@ -342,11 +341,11 @@ function BookRoomStep2({limitData}) {
             <option value="mrs">Mrs</option>
           </select>
           <input type="text" name="" id="" placeholder="First Name" onChange={(e) => { setfname(e.target.value) }} />
-          <input type="text" name="" id="" placeholder="Last Name" onChange={(e) => { setlname(e.target.value) }}/>
+          <input type="text" name="" id="" placeholder="Last Name" onChange={(e) => { setlname(e.target.value) }} />
         </div>
         <div className={book.contact}>
-          <input type="tel" name="" id="" placeholder="Mobile Number" onChange={(e) => { setMobile(e.target.value) }}/>
-          <input type="email" name="" id="" placeholder="Email (Optional)" onChange={(e) => { setEmail(e.target.value) }}/>
+          <input type="tel" name="" id="" placeholder="Mobile Number" onChange={(e) => { setMobile(e.target.value) }} />
+          <input type="email" name="" id="" placeholder="Email (Optional)" onChange={(e) => { setEmail(e.target.value) }} />
         </div>
       </div>
       <div className={book.section}>
@@ -362,7 +361,7 @@ function BookRoomStep2({limitData}) {
                   <td>{guest.isChild ? "Child" : "Adult"}</td>
                   <td className={book.bin} onClick={() => { setGuests((preGuests) => ([...preGuests.slice(0, index), ...preGuests.slice(index + 1)])) }}>&#128465;</td>
                 </tr>
-              ) : <tr><td style={{fontStyle:"italic"}}>No Guest Added</td></tr>
+              ) : <tr><td style={{ fontStyle: "italic" }}>No Guest Added</td></tr>
             }
           </table>
           {guests.length < (limitData.adult + limitData.child) ? <button className={book.addGuestBtn} onClick={handleAddGuest}>Add Guest</button> : ""}
@@ -372,19 +371,19 @@ function BookRoomStep2({limitData}) {
         <Header no="4" title="Aditional Services" />
         <div className={book.extraBox}>
           {
-            limitData.extra.map((item, index)=>
+            limitData.extra.map((item, index) =>
               <span className={book.extraItem}>
-                <input type="checkbox" name={item.name} id={item.name + index} onChange={(e)=>{setServices((prev)=>{let newState = [...prev]; e.target.checked ? newState.push({label: e.target.name, rate: item.rate}): ""; return newState})}}/>
+                <input type="checkbox" name={item.name} id={item.name + index} onChange={(e) => { setServices((prev) => { let newState = [...prev]; e.target.checked ? newState.push({ label: e.target.name, rate: item.rate }) : ""; return newState }) }} />
                 <label htmlFor={item.name + index}><img src={item.logo} alt="" />{item.name}</label>
               </span>
             )
           }
         </div>
         <label className={book.specificationLabel} htmlFor="specification">Please Specify how we can make your experience awesome</label>
-        <textarea className={book.textarea} name="" id="specification" rows={5} onChange={(e)=>{setMsg(e.target.value)}}></textarea>
+        <textarea className={book.textarea} name="" id="specification" rows={5} onChange={(e) => { setMsg(e.target.value) }}></textarea>
       </div>
       {
-        verification ? <span style={{color:"red"}}>{verification}</span> : ""
+        verification ? <span style={{ color: "red" }}>{verification}</span> : ""
       }
       <button className={book.nextBtn} onClick={handleNext}>Next</button>
     </div>
@@ -397,21 +396,21 @@ export default function Rooms() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [roomInfo]);
-  useEffect(()=>{
+  useEffect(() => {
     console.log("here to fetch data");
-    const getData = async()=>{
+    const getData = async () => {
       let data = await fetchData('getRoomList', 'GET');
-      if(data.status){
+      if (data.status) {
         setRoomList(data.content);
-      }else{
+      } else {
         alert("something Went Wrong = ", data.reason.message);
         console.log("fetchedData", data.reason)
       }
     }
     getData();
-  },[]);
+  }, []);
 
-  const handleViewRoom = async(roomId, roomIndex) => {
+  const handleViewRoom = async (roomId, roomIndex) => {
     // // let fetchedInfo = await fetchData('getRoomInfo', 'POST', {id: roomId});
     // if(!fetchData.status){
     //   alert("Something Went Wrong! Please Try Refreshing the page");
@@ -419,16 +418,16 @@ export default function Rooms() {
     // }
     let roomInfoData = {
       index: roomIndex,
-      _id: roomId, 
+      _id: roomId,
       thumbnail: roomList[roomIndex].gallery[0],
       name: roomList[roomIndex].name,
       overview: roomList[roomIndex].detailedInfo,
       gallery: roomList[roomIndex].gallery,
-      ammenities	: roomList[roomIndex].ammenities,
+      ammenities: roomList[roomIndex].ammenities,
       rules: roomList[roomIndex].rules,
       price: roomList[roomIndex].price,
       broker: roomList[roomIndex].broker,
-      extraFeatures : roomList[roomIndex].extraFeatures
+      extraFeatures: roomList[roomIndex].extraFeatures
     };
 
     setRoomInfo(roomInfoData);
@@ -439,8 +438,8 @@ export default function Rooms() {
       <RoomInfo info={roomInfo} onExit={() => { setRoomInfo(null) }} /> :
       <div>
         <SlideShow gallery={roomData.slideShow.gallery} content={roomData.slideShow.body} />
-        <h1 style={{textAlign:"center", margin:"80px 80px -40px 80px", color:"white", textShadow:"0px 0px 5px black", fontSize:"clamp(20px, 5vw ,30px)"}}>We Have comfortable Rooms<br/>< hr style={{width:"clamp(150px, 40%, 300px)", margin:"10px auto"}}/></h1>
-        {roomList  ? <RoomCatelog content={roomList} onView={handleViewRoom} /> : ''}
+        <h1 style={{ textAlign: "center", margin: "80px 80px -40px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>We Have comfortable Rooms<br />< hr style={{ width: "clamp(150px, 40%, 300px)", margin: "10px auto" }} /></h1>
+        {roomList ? <RoomCatelog content={roomList} onView={handleViewRoom} /> : ''}
       </div>
   );
 }

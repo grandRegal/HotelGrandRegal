@@ -14,6 +14,7 @@ import billBox from './billBox.module.css';
 import Popup from '../../components/popup/Popup';
 
 import fetchData from '../../../../adminPanel/utils/fetcher';
+import { popup } from "../../../../../../../../myPackages/javaScript/myPackage/reactComponents";
 
 function TarrifBox({ tarrif }) {
     const [banquetMenu, setBanquetMenu] = useState(null);
@@ -113,7 +114,8 @@ function TarrifBox({ tarrif }) {
     );
 }
 
-function BookingForm({ tarrifDetails, extra }) {
+function BookingForm({ tarrifDetails, extra, banquetName, price }) {
+    // console.log("tarrifdetails=" , tarrifDetails);
     const today = new Date();
     const threeMonthsLater = new Date();
     threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3);
@@ -132,13 +134,16 @@ function BookingForm({ tarrifDetails, extra }) {
     const [lname, setLname] = useState(null);
     const [mobile, setMobile] = useState(null);
     const [email, setEmail] = useState(null);
-    const [cat, setCat] = useState(0);
-    const [plan, setPlan] = useState(0);
+    const [cat, setCat] = useState('veg');
+    const [plan, setPlan] = useState('silver');
     const [services, setServices] = useState([]);
-    const [selectedMenu, setSelectedMenu] = useState(null);
     const [bill, setBill] = useState(null);
 
-
+    const bookBanquet = async (total) => {
+        let ack = await fetchData('bookBanquet', 'POST', { name: banquetName, fname: fname, lname: lname, mobile: mobile, email: email, date: date, time: time, duration: duration, tarrif: cat, plan: plan, guestCount: count, additional: services, userShownCost:total })
+        if(ack.status)  alert("Booking Request Send - Note That This Doesn't mean that its confirmed We Will Process Your Request And Will let you know within hour");
+        else alert("Booking Request Failed");
+    }
 
     const InnerPopup = ({ component, onClose }) => {
         return (
@@ -162,6 +167,11 @@ function BookingForm({ tarrifDetails, extra }) {
     }
 
     const handleFormSubmition = (e) => {
+        let planCost = cat == 'veg' ? plan == 'silver' ? 500 : plan == 'gold' ? 600 : 700 : plan == 'silver' ? 600 : plan == 'gold' ? 700 : 800;
+        let total = planCost * count / 100 * 118 + price / 100 * 118 ;
+        for(let i =0; i< services.length; i++){
+            total += (services[i].rate / 100 * 118)
+        }
         const Bill = () => {
             return (
                 <div className={billBox.container}>
@@ -173,13 +183,13 @@ function BookingForm({ tarrifDetails, extra }) {
                                 </td>
                             </tr>
                             <tr className={billBox.header2}>
-                                <td colSpan={4}>Majestic Hall</td>
+                                <td colSpan={4}>{banquetName}</td>
                             </tr>
                             <tr className={billBox.values}>
-                                <td>Rs 10000</td>
+                                <td>Rs {price}</td>
                                 <td>x 1</td>
                                 <td>+18% GST</td>
-                                <td>Rs 11800</td>
+                                <td>Rs {price / 100 * 118}</td>
                             </tr>
                             <tr className={billBox.header1}>
                                 <td colSpan={5}>
@@ -187,28 +197,34 @@ function BookingForm({ tarrifDetails, extra }) {
                                 </td>
                             </tr>
                             <tr className={billBox.header2}>
-                                <td colSpan={4}>Veg Silver Plan</td>
+                                <td colSpan={4}>{cat} {plan} Plan</td>
                             </tr>
                             <tr className={billBox.values}>
-                                <td>Rs 600</td>
+                                <td>Rs {planCost}</td>
                                 <td>x 100 (guest)</td>
                                 <td>+18% GST</td>
-                                <td>Rs 11800</td>
+                                <td>Rs {planCost * count / 100 * 118}</td>
                             </tr>
                             <tr className={billBox.header1}>
                                 <td colSpan={4}>
                                     Extra Services
                                 </td>
                             </tr>
-                            <tr className={billBox.header2}>
-                                <td colSpan={4}>Speaker</td>
-                            </tr>
-                            <tr className={billBox.values}>
-                                <td>Rs 10000</td>
-                                <td>x 1</td>
-                                <td>+18% GST</td>
-                                <td>Rs 11800</td>
-                            </tr>
+                            {
+                                services.map((service) => (
+                                    <>
+                                        <tr className={billBox.header2}>
+                                            <td colSpan={4}>{service.label}</td>
+                                        </tr>
+                                        <tr className={billBox.values}>
+                                            <td>Rs {service.rate}</td>
+                                            <td>x 1</td>
+                                            <td>+18% GST</td>
+                                            <td>Rs {service.rate /100*118}</td>
+                                        </tr>
+                                    </>
+                                ))
+                            }
                             <tr className={billBox.totalHeader}>
                                 <td colSpan={4}>
                                     Total Cost
@@ -216,16 +232,18 @@ function BookingForm({ tarrifDetails, extra }) {
                             </tr>
                             <tr className={billBox.totalCost}>
                                 <td colSpan={3}>Total</td>
-                                <td>Rs 81800</td>
+                                <td>Rs {total}</td>
                             </tr>
                         </tbody>
                     </table>
+                    <button style={{boxShadow:"0px 0px 5px gray", cursor:"pointer", fontWeight:"bolder", padding:"5px 20px", borderRadius:"15px", translate:"-50%", marginLeft:"50%", border:"0px", marginTop:"20px"}} onClick={()=>bookBanquet(total)}>Confirm Booking</button>
                 </div>
             )
         }
         e.preventDefault();
-        console.log(date, time, duration, count, fname, lname, mobile, email, cat, plan, services, selectedMenu);
-        setBill(<Bill />)
+        console.log(date, time, duration, count, fname, lname, mobile, email, cat, plan, services);
+        // setBill(<Bill />)
+        popup(Bill, {});
     }
     return (
         <div className={formStyle.container}>
@@ -267,8 +285,8 @@ function BookingForm({ tarrifDetails, extra }) {
                     <div className={formStyle.vegBox}>
                         <h4>Select Catering Category</h4>
                         <span>
-                            <input type="radio" name="a" id="veg" selected /><label htmlFor="veg" onChange={(e) => { e.target.selected ? setCat(0) : setCat(1) }}>Veg</label>
-                            <input type="radio" name="a" id="nonveg" /><label htmlFor="nonveg">Non Veg</label>
+                            <input type="radio" name="a" id="veg" checked={cat == 'veg'} onChange={(e) => { e.target.checked ? setCat('veg') : setCat('nonveg') }} /><label htmlFor="veg" >Veg</label>
+                            <input type="radio" name="a" id="nonveg" checked={cat == 'nonveg'} onChange={(e) => { e.target.checked ? setCat('nonveg') : setCat('veg') }} /><label htmlFor="nonveg" >Non Veg</label>
                         </span>
                     </div>
                     <div className={formStyle.planBox}>
@@ -276,7 +294,7 @@ function BookingForm({ tarrifDetails, extra }) {
                         <select name="" id="" onChange={(e) => { setPlan(e.target.value) }}>
                             {
                                 tarrifDetails[0].map((plan, index) =>
-                                    <option value={index} >{plan.name}</option>
+                                    <option value={plan.name}>{plan.name}</option>
                                 )
                             }
                         </select>
@@ -346,13 +364,10 @@ export default function () {
             </div>
         );
     }
-    const Blog = ({ content }) => {
+    const Blog = ({ content, name }) => {
         return (
             <div className={blog.container}>
                 <p className={blog.overview}>
-                    {/* <div style={{width:'100%', height:"20px", background:"#0c0000", margin:"10px"}}></div>
-                    <div style={{width:'100%', height:"20px", background:"#0c0000", margin:"10px"}}></div>
-                    <div style={{width:'100%', height:"20px", background:"#0c0000", margin:"10px"}}></div> */}
                     {content.overview}
                 </p>
                 <div className={blog.featureBox}>
@@ -368,7 +383,7 @@ export default function () {
                 <span className={blog.rate}>Rs <span>{content.price}</span> + Catering Charges</span>
                 <div className={blog.buttons}>
                     <button className={blog.btn1} onClick={() => setPopup(<GalleryBox imgs={content.gallery} />)}>View Gallery</button>
-                    <button className={blog.btn2} onClick={() => { setPopup(<BookingForm tarrifDetails={[[{ name: "silver" }, { name: "gold" }, { name: "platenium" }]]} extra={[{ label: "mike", logo: "" }, { label: "speaker", logo: "" }]} />) }}>Book Now</button>
+                    <button className={blog.btn2} onClick={() => { setPopup(<BookingForm tarrifDetails={[[{ name: "silver" }, { name: "gold" }, { name: "platenium" }]]} extra={[{ label: "mike", logo: "", charges:1000 }, { label: "speaker", logo: "", charges:1000 }]} banquetName={name} price ={content.price}/>) }}>Book Now</button>
                 </div>
             </div>
         );
@@ -378,7 +393,7 @@ export default function () {
             {popUp ? <Popup component={() => { return popUp }} onClose={() => { setPopup(null) }} /> : ""}
             <SlideShow gallery={banquetData.slideShow.gallery} content={banquetData.slideShow.body} />
             <h1 style={{ textAlign: "center", margin: "80px 80px 20px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>Celebrate With<br /></h1>
-            {banquetList ? <BlogCard img1={banquetList[0].gallery[0]} img2={banquetList[1].gallery[0]} blog1={<Blog content={banquetList[0]} />} blog2={<Blog content={banquetList[1]} />} /> : ''}
+            {banquetList ? <BlogCard img1={banquetList[0].gallery[0]} img2={banquetList[1].gallery[0]} blog1={<Blog content={banquetList[0]} name="Majestic Hall"/>} blog2={<Blog content={banquetList[1]} name="Royal Conference Hall"/>} /> : ''}
             <h1 style={{ textAlign: "center", margin: "80px 80px 20px 80px", color: "white", textShadow: "0px 0px 5px black", fontSize: "clamp(20px, 5vw ,30px)" }}>Our Catering Plans<br /></h1>
             {tarrif ? <TarrifBox tarrif={tarrif} /> : ''}
         </div>

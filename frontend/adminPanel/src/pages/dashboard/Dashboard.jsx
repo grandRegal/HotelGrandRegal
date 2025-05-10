@@ -1,8 +1,22 @@
 import { useEffect, useState } from 'react';
 import style from './Dashboard.module.css';
 // import apiURL from '../../src/utils/api';
-const  apiURL = import.meta.env.VITE_SERVER_URL;
+const apiURL = import.meta.env.VITE_SERVER_URL;
 import { useNavigate } from 'react-router-dom';
+
+function convertToHeaderValueFormat(enumStatsArray) {
+    return enumStatsArray.map(enumObj =>
+        Object.entries(enumObj).map(([key, value]) => ({
+            header: capitalizeFirstLetter(key),
+            value: value
+        }))
+    );
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 
 export default function Dashboard() {
     const navigate = useNavigate()
@@ -13,20 +27,21 @@ export default function Dashboard() {
         [{ header: "Unread", value: 0 }, { header: "Replied", value: 0 }, { header: "Not Replied", value: 0 }]
     ]);
     useEffect(() => {
-        const fetchData = ()=> fetch(apiURL + '/dashboard', {
+        const fetchData = () => fetch(apiURL + 'dashboard', {
             method: 'GET',
             credentials: 'include'
         }).
-        then(response => response.json()).
-        then(data => {
-            if(data.status)
-                setData(data.content);
-            else
-                navigate('/login') 
-        }).
-        catch(error => {
-            console.error('Error:', error);
-        });
+            then(response => response.json()).
+            then(data => {
+                if (data.status) {
+                    setData(convertToHeaderValueFormat(data.content));
+                }
+                else
+                    navigate('/login')
+            }).
+            catch(error => {
+                console.error('Error:', error);
+            });
         fetchData();
         const interval = setInterval(fetchData, 6000);
         return () => clearInterval(interval);
@@ -58,8 +73,8 @@ export default function Dashboard() {
             <div className={style.dashPoints}>
                 <DashCard title="Room Bookings" content={data[0]} />
                 <DashCard title="Banquet Bookings" content={data[1]} />
-                <DashCard title="Feedbacks" content={data[2]} />
-                <DashCard title="Enquiries" content={data[3]} />
+                <DashCard title="Enquiries" content={data[2]} />
+                <DashCard title="Feedbacks" content={data[3]} />
             </div>
         </div>
     );

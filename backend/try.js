@@ -15,7 +15,7 @@ const dbName = "grandRegalDb";
   
     try {
       await client.connect();
-      insertDummyTarrifs(client.db("grandRegalDb"));
+      createRoomBookingsCollection(client.db("grandRegalDb"));
     } catch (err) {
       console.error("❌ Error:", err);
     }   
@@ -636,7 +636,7 @@ const dbName = "grandRegalDb";
             bsonType: "object",
             required: [
               "roomName", "name", "checkIn", "checkOut", 
-              "checkInT", "checkOutT", "mobile",  "finalCost"
+              "checkInT", "checkOutT", "mobile",  "finalCost", 'status'
             ],
             properties: {
               roomName: { bsonType: "string" },
@@ -651,6 +651,10 @@ const dbName = "grandRegalDb";
                     isChild: { bsonType: "bool" }
                   }
                 }
+              },
+              status: {
+                bsonType: 'string',
+                enum: ['pending', 'accepted', 'declined']
               },
               checkIn: { bsonType: "date" },
               checkOut: { bsonType: "date" },
@@ -829,6 +833,88 @@ const dbName = "grandRegalDb";
       console.error("❌ Error creating tarrifs collection:", err.message);
     }
   }
+
+  async function createBanquetBookingsCollection(db) {
+    try {
+      await db.createCollection('banquetBookings', {
+        validator: {
+          $jsonSchema: {
+            bsonType: 'object',
+            required: ['name', 'fname', 'lname', 'mobile', 'email', 'date', 'time', 'duration', 'tarrif', 'plan', 'guestCount', 'cost', 'costShown', 'status'],
+            properties: {
+              name: { bsonType: 'string' },
+              fname: { bsonType: 'string' },
+              lname: { bsonType: 'string' },
+              mobile: { bsonType: 'string' },
+              email: { bsonType: 'string' },
+              date: { bsonType: 'date' },
+              time: { bsonType: 'string' }, // e.g., "18:00"
+              duration: { bsonType: 'int' },
+              cost: { bsonType: 'int'},
+              costShown: { bsonType: 'int'},
+              tarrif: {
+                bsonType: 'string',
+                enum: ['veg', 'nonveg']
+              },
+              status: {
+                bsonType: 'string',
+                enum: ['pending', 'accepted', 'declined']
+              },
+              plan: { bsonType: 'string' },
+              guestCount: { bsonType: 'int' },
+              additional: {
+                bsonType: 'array',
+                items: { bsonType: 'string' }
+              }
+            }
+          }
+        }
+      });
+  
+      console.log('banquetBookings collection created successfully.');
+    } catch (err) {
+      if (err.codeName === 'NamespaceExists') {
+        console.log('Collection banquetBookings already exists.');
+      } else {
+        console.error('Error creating collection:', err);
+      }
+    }
+  }
+
+  async function createEnquiriesCollection(db) {
+    try {
+      await db.createCollection('enquiries', {
+        validator: {
+          $jsonSchema: {
+            bsonType: 'object',
+            required: ['fname', 'lname', 'email', 'mobile', 'reason', 'message', 'status'],
+            properties: {
+              fname: { bsonType: 'string' },
+              lname: { bsonType: 'string' },
+              email: { bsonType: 'string' },
+              mobile: { bsonType: 'string' },  // Assuming this is a field name. If not, rename it appropriately.
+              reason: { bsonType: 'string' },
+              message: { bsonType: 'string' },
+              status: {
+                bsonType: 'string',
+                enum: ['unread', 'replied', 'read']
+              }
+            }
+          }
+        }
+      });
+  
+      console.log('enquiries collection created successfully.');
+    } catch (err) {
+      if (err.codeName === 'NamespaceExists') {
+        console.log('Collection enquiries already exists.');
+      } else {
+        console.error('Error creating enquiries collection:', err);
+      }
+    }
+  }
+  
+  
   
   
   

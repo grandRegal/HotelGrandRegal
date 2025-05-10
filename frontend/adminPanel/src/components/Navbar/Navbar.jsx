@@ -14,7 +14,10 @@ export default function Navbar(){
                 return '3';
             case '/feedback':
                 return '4';
-            return '0';
+            case '/enquiry':
+                return '5';
+            default:
+                return '0';
         }
     }; 
 
@@ -33,7 +36,8 @@ export default function Navbar(){
                 <li className={selected == '1' ? style.selected : ''} onClick={()=>{ setSelected('1'); navigate('/')}}>Dashboard</li>
                 <li className={selected == '2' ? style.selected : ''} onClick={()=>{ setSelected('2'); navigate('/content')}}>Content</li>
                 <li className={selected == '3' ? style.selected : ''} onClick={()=>{ setSelected('3'); navigate('/bookings')}}>Bookings</li>
-                <li className={selected == '4' ? style.selected : ''} onClick={()=>{ setSelected('4'); navigate('/feedback')}}>Enquiries</li>
+                <li className={selected == '4' ? style.selected : ''} onClick={()=>{ setSelected('4'); navigate('/feedback')}}>Feedback</li>
+                <li className={selected == '5' ? style.selected : ''} onClick={()=>{ setSelected('5'); navigate('/enquiry')}}>Enquiries</li>
             </ul>
         </nav>
     );
