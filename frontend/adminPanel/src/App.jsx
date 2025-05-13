@@ -19,9 +19,7 @@ function App() {
     const navigate = useNavigate();
 
     const handleLogin = (e) => {
-      console.log("sending Login", username, pwd)
       e.preventDefault();
-      console.log("I am here in app.jsc handeling");
       fetch(apiURL + 'adminLogin', {
         method: 'POST',
         credentials: 'include',
@@ -39,7 +37,7 @@ function App() {
           if (data.status) {
             navigate('/');
           } else {
-            alert("Invalid Credinials")
+            alert("Invalid Credinials");
           }
         })
         .catch(error => {

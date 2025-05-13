@@ -4,6 +4,7 @@ import dineMenu from './DineMenu.module.css';
 import addMenu from './AddMenu.module.css';
 import roomDetails from './RoomDetails.module.css';
 import banquetDetails from './BanquetDetails.module.css';
+import tarrif from './Tarrif.module.css';
 import fetchData from '../../../utils/fetcher';
 import { useNavigate } from 'react-router-dom';
 import { popup } from 'react-components';
@@ -205,17 +206,17 @@ function DineMenu() {
 
 function RoomDetails() {
     const [data, setData] = useState([]);
-    let refresh = async()=>{
+    let refresh = async () => {
         let ack = await fetchData('roomDetails', 'GET');
-        if(ack.status){
+        if (ack.status) {
             setData(ack.content)
-        }else{
+        } else {
             alert(ack.reason);
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         refresh();
-    },[]);
+    }, []);
     const RoomForm = ({ id = null, pimgs = [], pname = null, pinfo = null, pdesc = null, pprice = null, pcapacity = null }) => {
         console.log(id)
         const [imgs, setImgs] = useState(pimgs);
@@ -227,24 +228,24 @@ function RoomDetails() {
         const handleImgChange = (imgs) => {
             setImgs(imgs);
         }
-        const handleSubmit = async(e) => {
+        const handleSubmit = async (e) => {
             e.preventDefault();
             if (imgs.length < 4) {
                 alert("Upload Atleast 4 images");
                 return;
-            }else{
+            } else {
                 let ack = null;
-                if(id)  ack = await fetchData('setRoom', 'POST', null, [{key: "jsonData", value:JSON.stringify({id: id, name:name, info:info, desc:desc, price:price, capacity:capacity})}, ...imgs.map(img=>{return{key:"gallery", value: img}})]);
-                else ack = await fetchData('addRoom', 'POST', null, [{key: "jsonData", value:JSON.stringify({id: id, name:name, info:info, desc:desc, price:price, capacity:capacity})}, ...imgs.map(img=>{return{key:"gallery", value: img}})]);
-                if(ack.status)  alert("Data Modified Successfully");
-                else alert("Failed To MOdify Data" +  ack.reason)
+                if (id) ack = await fetchData('setRoom', 'POST', null, [{ key: "jsonData", value: JSON.stringify({ id: id, name: name, info: info, desc: desc, price: price, capacity: capacity }) }, ...imgs.map(img => { return { key: "gallery", value: img } })]);
+                else ack = await fetchData('addRoom', 'POST', null, [{ key: "jsonData", value: JSON.stringify({ id: id, name: name, info: info, desc: desc, price: price, capacity: capacity }) }, ...imgs.map(img => { return { key: "gallery", value: img } })]);
+                if (ack.status) alert("Data Modified Successfully");
+                else alert("Failed To MOdify Data" + ack.reason)
                 refresh();
             }
         }
         return (
             <form action="" className={roomDetails.form} onSubmit={handleSubmit}>
                 <div style={{ width: "300px" }} className={roomDetails.galleryBox}>
-                    <ImageHandler onChange={handleImgChange} imgSet={pimgs}/>
+                    <ImageHandler onChange={handleImgChange} imgSet={pimgs} />
                 </div>
                 <div className={roomDetails.details}>
                     <div className={roomDetails.inputBox}>
@@ -274,18 +275,18 @@ function RoomDetails() {
             </form>
         );
     }
-    const RoomCard = ({id, gallery, name, info, desc, price, capacity}) => {
-        const handleDelete = async(id)=>{
-            if(window.confirm("Do You Really Want To Delete Room Record")){
-                let ack = await fetchData('deleteRoom', 'POST', {id: id})
-                if(ack.status) alert("Operation Successful");
+    const RoomCard = ({ id, gallery, name, info, desc, price, capacity }) => {
+        const handleDelete = async (id) => {
+            if (window.confirm("Do You Really Want To Delete Room Record")) {
+                let ack = await fetchData('deleteRoom', 'POST', { id: id })
+                if (ack.status) alert("Operation Successful");
                 else alert("Operation Failed" + ack.reason);
                 refresh();
             }
         }
         async function getBuffers(gallery) {
             return await Promise.all(gallery.map(img => urlToBuffer(img)));
-          }
+        }
         return (
             <div className={roomDetails.card}>
                 <img src={gallery[0]} alt="" />
@@ -293,8 +294,8 @@ function RoomDetails() {
                 <p className={roomDetails.cardDetails}>{info}</p>
                 <span className={roomDetails.cardPrice}>Rs {price} / night</span>
                 <div className={roomDetails.cardActions}>
-                    <button onClick={async() => popup(RoomForm, { id: id, pimgs: await getBuffers(gallery), pname: name, pinfo: info, pdesc: desc, pprice: price, pcapacity: capacity })}>Edit</button>
-                    <button onClick={()=>{handleDelete(id)}}>Delete</button>
+                    <button onClick={async () => popup(RoomForm, { id: id, pimgs: await getBuffers(gallery), pname: name, pinfo: info, pdesc: desc, pprice: price, pcapacity: capacity })}>Edit</button>
+                    <button onClick={() => { handleDelete(id) }}>Delete</button>
                 </div>
             </div>
         );
@@ -304,11 +305,11 @@ function RoomDetails() {
             <h2 className={dineMenu.header}>Manage Rooms</h2>
             <div className={roomDetails.cardHolder}>
                 {
-                    data.map((roomInfo)=>
-                        <RoomCard id = {roomInfo.id} gallery={roomInfo.gallery} name={roomInfo.name} info = {roomInfo.info} desc = {roomInfo.desc}  price={roomInfo.price} capacity={roomInfo.capacity}/>
+                    data.map((roomInfo) =>
+                        <RoomCard id={roomInfo.id} gallery={roomInfo.gallery} name={roomInfo.name} info={roomInfo.info} desc={roomInfo.desc} price={roomInfo.price} capacity={roomInfo.capacity} />
                     )
                 }
-                <span style={{height:"300px", aspectRatio:"0.9 / 1.6", fontSize:"100px", fontWeight:"bold", background:"white", textAlign:"center", boxShadow:"0px 0px 5px gray", borderRadius:"25px", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer"}} onClick={()=>popup(RoomForm, {})}>+</span>
+                <span style={{ height: "300px", aspectRatio: "0.9 / 1.6", fontSize: "100px", fontWeight: "bold", background: "white", textAlign: "center", boxShadow: "0px 0px 5px gray", borderRadius: "25px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }} onClick={() => popup(RoomForm, {})}>+</span>
             </div>
         </div>
     );
@@ -316,17 +317,17 @@ function RoomDetails() {
 
 function BanquetDetails() {
     const [data, setData] = useState([]);
-    let refresh = async()=>{
+    let refresh = async () => {
         let ack = await fetchData('banquetDetails', 'GET');
-        if(ack.status){
+        if (ack.status) {
             setData(ack.content)
-        }else{
+        } else {
             alert(ack.reason);
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         refresh();
-    },[]);
+    }, []);
     const BanquetForm = ({ id = null, pimgs = [], pname = null, pdesc = null, pprice = null, pcapacity = null }) => {
         console.log(id)
         const [imgs, setImgs] = useState(pimgs);
@@ -337,24 +338,24 @@ function BanquetDetails() {
         const handleImgChange = (imgs) => {
             setImgs(imgs);
         }
-        const handleSubmit = async(e) => {
+        const handleSubmit = async (e) => {
             e.preventDefault();
             if (imgs.length < 4) {
                 alert("Upload Atleast 4 images");
                 return;
-            }else{
+            } else {
                 let ack = null;
-                if(id)  ack = await fetchData('setBanquet', 'POST', null, [{key: "jsonData", value:JSON.stringify({id: id, name:name, desc:desc, price:price, capacity:capacity})}, ...imgs.map(img=>{return{key:"gallery", value: img}})]);
-                else ack = await fetchData('addBanquet', 'POST', null, [{key: "jsonData", value:JSON.stringify({id: id, name:name, desc:desc, price:price, capacity:capacity})}, ...imgs.map(img=>{return{key:"gallery", value: img}})]);
-                if(ack.status)  alert("Data Modified Successfully");
-                else alert("Failed To MOdify Data" +  ack.reason)
+                if (id) ack = await fetchData('setBanquet', 'POST', null, [{ key: "jsonData", value: JSON.stringify({ id: id, name: name, desc: desc, price: price, capacity: capacity }) }, ...imgs.map(img => { return { key: "gallery", value: img } })]);
+                else ack = await fetchData('addBanquet', 'POST', null, [{ key: "jsonData", value: JSON.stringify({ id: id, name: name, desc: desc, price: price, capacity: capacity }) }, ...imgs.map(img => { return { key: "gallery", value: img } })]);
+                if (ack.status) alert("Data Modified Successfully");
+                else alert("Failed To MOdify Data" + ack.reason)
                 refresh();
             }
         }
         return (
             <form action="" className={banquetDetails.form} onSubmit={handleSubmit}>
                 <div style={{ width: "300px" }} className={banquetDetails.galleryBox}>
-                    <ImageHandler onChange={handleImgChange} imgSet={pimgs}/>
+                    <ImageHandler onChange={handleImgChange} imgSet={pimgs} />
                 </div>
                 <div className={banquetDetails.details}>
                     <div className={banquetDetails.inputBox}>
@@ -380,18 +381,18 @@ function BanquetDetails() {
             </form>
         );
     }
-    const BanquetCard = ({id, gallery, name, desc, price, capacity}) => {
-        const handleDelete = async(id)=>{
-            if(window.confirm("Do You Really Want To Delete Room Record")){
-                let ack = await fetchData('deleteRoom', 'POST', {id: id})
-                if(ack.status) alert("Operation Successful");
+    const BanquetCard = ({ id, gallery, name, desc, price, capacity }) => {
+        const handleDelete = async (id) => {
+            if (window.confirm("Do You Really Want To Delete Room Record")) {
+                let ack = await fetchData('deleteRoom', 'POST', { id: id })
+                if (ack.status) alert("Operation Successful");
                 else alert("Operation Failed" + ack.reason);
                 refresh();
             }
         }
         async function getBuffers(gallery) {
             return await Promise.all(gallery.map(img => urlToBuffer(img)));
-          }
+        }
         return (
             <div className={banquetDetails.card}>
                 <img src={gallery[0]} alt="" />
@@ -399,8 +400,8 @@ function BanquetDetails() {
                 <p className={banquetDetails.cardDetails}>{desc}</p>
                 <span className={banquetDetails.cardPrice}>Rs {price} + Catering Charges</span>
                 <div className={banquetDetails.cardActions}>
-                    <button onClick={async() => popup(BanquetForm, { id: id, pimgs: await getBuffers(gallery), pname: name, pdesc: desc, pprice: price, pcapacity: capacity })}>Edit</button>
-                    <button onClick={()=>{handleDelete(id)}}>Delete</button>
+                    <button onClick={async () => popup(BanquetForm, { id: id, pimgs: await getBuffers(gallery), pname: name, pdesc: desc, pprice: price, pcapacity: capacity })}>Edit</button>
+                    <button onClick={() => { handleDelete(id) }}>Delete</button>
                 </div>
             </div>
         );
@@ -410,18 +411,79 @@ function BanquetDetails() {
             <h2 className={dineMenu.header}>Manage Banquet</h2>
             <div className={banquetDetails.cardHolder}>
                 {
-                    data.map((roomInfo)=>
-                        <BanquetCard id = {roomInfo.id} gallery={roomInfo.gallery} name={roomInfo.name} info = {roomInfo.info} desc = {roomInfo.desc}  price={roomInfo.price} capacity={roomInfo.capacity}/>
+                    data.map((roomInfo) =>
+                        <BanquetCard id={roomInfo.id} gallery={roomInfo.gallery} name={roomInfo.name} info={roomInfo.info} desc={roomInfo.desc} price={roomInfo.price} capacity={roomInfo.capacity} />
                     )
                 }
-                {data.length<2 ? <span style={{height:"300px", aspectRatio:"0.9 / 1.6", fontSize:"100px", fontWeight:"bold", background:"white", textAlign:"center", boxShadow:"0px 0px 5px gray", borderRadius:"25px", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer"}} onClick={()=>popup(RoomForm, {})}>+</span> : ''}
+                {data.length < 2 ? <span style={{ height: "300px", aspectRatio: "0.9 / 1.6", fontSize: "100px", fontWeight: "bold", background: "white", textAlign: "center", boxShadow: "0px 0px 5px gray", borderRadius: "25px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }} onClick={() => popup(RoomForm, {})}>+</span> : ''}
             </div>
         </div>
     );
 }
 
 function BanquetTarrif() {
-
+    const TarrifForm = ({ pId = null, pName = null, pIsVeg = null, pPrice = null, pItems = null }) => {
+        const [items, setItems] = useState([]);
+        const [name, setName] = useState();
+        const [isVeg, setIsVeg] = useState(false);
+        const [price, setPrice] = useState();
+        const [item, setItem] = useState();
+        const handleAdd = () => {
+            if (item) {
+                setItems((pre) => [...pre, item]);
+                setItem(null);
+            }
+        }
+        return (
+            <form className={tarrif.form} action="">
+                <div className={tarrif.holder}>
+                    <div className={tarrif.section}>
+                        <h2>Basic Details</h2>
+                        <hr className={tarrif.hr}/>
+                        <div className={tarrif.inputBox}>
+                            <label htmlFor="name">Tarrif Name</label>
+                            <input type="text" name="name" id="name" required placeholder='for ex - gold' />
+                        </div>
+                        <div className={tarrif.inputBox}>
+                            <label htmlFor="cat">Category</label>
+                            <select name="cat" id="cat">
+                                <option value="veg">Veg</option>
+                                <option value="nonveg">Non Veg</option>
+                            </select>
+                        </div>
+                        <div className={tarrif.inputBox}>
+                            <label htmlFor="cost">Cost Per Plate</label>
+                            <input type="number" name="cost" id="cost" required placeholder='for ex -600' />
+                        </div>
+                    </div>
+                    <div className={tarrif.section}>
+                        <h2>Tarrif Involve</h2>
+                        <hr className={tarrif.hr}/>
+                        <ul className={tarrif.includes}>
+                            {
+                                items.length> 0 ? items.map((item) =>
+                                    <li>{item}</li>
+                                ) : <div>Please Add Items...</div>
+                            }
+                        </ul>
+                        <div className={tarrif.addSection}>
+                            <input id='cost' value={item} type="text" placeholder='1 Desert' onChange={(e) => setItem(e.target.value)} />
+                            <button type='button' onClick={handleAdd}>+ Add Item</button>
+                        </div>
+                    </div>
+                </div>
+                <button className={tarrif.submit} type="submit">Add Tarrif</button>
+            </form>
+        );
+    }
+    return (
+        <div className={roomDetails.container}>
+            <h2 className={dineMenu.header}>Manage Rooms</h2>
+            <div className={roomDetails.cardHolder}>
+                <span style={{ height: "300px", aspectRatio: "0.9 / 1.6", fontSize: "100px", fontWeight: "bold", background: "white", textAlign: "center", boxShadow: "0px 0px 5px gray", borderRadius: "25px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }} onClick={() => popup(TarrifForm, {})}>+</span>
+            </div>
+        </div>
+    );
 }
 
 function BanquetMenu() {

@@ -6,21 +6,38 @@ const getContent = require('./utils/contentGenerator');
 const handleImg = require('./utils/handleImg');
 const Creds = require('./utils/creds');
 const sendMail = require('./utils/sendMail');
+const cookieParser = require('cookie-parser');
 
+
+
+const adminAuthMiddleware = async (req, res, next) => {
+    const path = req.path;
+  
+    // Match /api/admin/* but not /api/admin/login
+    if (path.startsWith('/api/admin/') && path !== '/api/admin/adminLogin') {
+      try {
+        const isValid = await credsData.verifyRequest(req.headers.cookie);
+        console.log(isValid, req.headers.cookie)
+        if (!isValid) {
+          return res.status(401).json({
+            status: false,
+            reason: "session expired"
+          });
+        }
+      } catch (err) {
+        return res.status(500).json({
+          status: false,
+          reason: "internal server error"
+        });
+    }
+}
+
+next();
+};
 
 /*Server Logic */
 const app = express();
 const PORT = 3000;
-app.use(express.json());
-
-
-/*Image Upload Logic */
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-/*CORS Logic */
-const allowedOrigins = process.env.ACCESS_URL.split(',');
-
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -33,10 +50,22 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(adminAuthMiddleware);
+app.use(express.json());
+
+/*Image Upload Logic */
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+/*CORS Logic */
+const allowedOrigins = process.env.ACCESS_URL.split(',');
+
 
 
 /*User Login Logic */
 const credsData = new Creds();
+credsData.changeCreds("rushiphalle", "Abcd1234");
 
 async function init() {
     try {
@@ -55,33 +84,40 @@ async function init() {
             });
 
             /*Admin Requests */
-            app.post('/api/adminLogin', (req, res) => {
-                if (req.body.username && req.body.pwd) {
-                    let status = credsData.verifyLogin(req.body.username, req.body.pwd);
-                    if (status) {
+            app.post('/api/admin/adminLogin', async (req, res) => {
+                const { username, pwd, isToRemember } = req.body;
+            
+                if (!username || !pwd) {
+                    return res.status(400).json({ status: false, reason: "Missing credentials" });
+                }
+            
+                try {
+                    const cookieValue = await credsData.verifyLogin(username, pwd);
+                    if (cookieValue) {
                         res.cookie(
                             'loginCookie',
-                            status,
+                            cookieValue,
                             {
                                 httpOnly: true,
-                                maxAge: req.body.isToRemember ? 604800000 : undefined,
+                                maxAge: isToRemember ? 604800000 : undefined, // 7 days
                                 secure: true,
                                 sameSite: 'none'
                             }
-                        )
-                        res.json({ status: true });
+                        );
+                        return res.json({ status: true });
                     } else {
-                        res.json({ status: false });
+                        return res.status(401).json({ status: false, reason: "Invalid credentials" });
                     }
-                    res.end();
-                } else {
-                    res.json({})
+                } catch (err) {
+                    console.error("Login error:", err);
+                    return res.status(500).json({ status: false, reason: "Internal server error" });
                 }
             });
-            app.get('/api/dashboard', async(req, res) => {
+            
+            app.get('/api/admin/dashboard', async(req, res) => {
                 res.json(await content.adminRequests.dashboard.getDashboard());
             });
-            app.post('/api/addMenu', upload.single('thumb'), async (req, res) => {
+            app.post('/api/admin/addMenu', upload.single('thumb'), async (req, res) => {
                 console.log("ADD menu request received");
                 if (credsData.verifyRequest(req.headers.cookie)) {
                     if (req.file) {
@@ -110,7 +146,7 @@ async function init() {
                     })
                 }
             });
-            app.get('/api/getMenu', async (req, res) => {
+            app.get('/api/admin/getMenu', async (req, res) => {
                 let ack = await content.adminRequests.content.getMenu();
                 if (ack.status) {
                     res.json(
@@ -129,7 +165,7 @@ async function init() {
                 }
 
             });
-            app.post('/api/editMenu', upload.single('thumb'), async (req, res) => {
+            app.post('/api/admin/editMenu', upload.single('thumb'), async (req, res) => {
                 try {
                     const ack = await cloudinary.insertImg(req.file.buffer);
                     let newData = JSON.parse(req.body.jsonData);
@@ -138,13 +174,13 @@ async function init() {
                     res.json({ status: false, reason: "failer to upload to storage reason = " + JSON.stringify(err) });
                 }
             });
-            app.post('/api/deleteMenu', async (req, res) => {
+            app.post('/api/admin/deleteMenu', async (req, res) => {
                 res.json(await content.adminRequests.content.deleteMenu(req.body.id));
             });
-            app.get('/api/roomDetails', async (req, res) => {
+            app.get('/api/admin/roomDetails', async (req, res) => {
                 res.json(await content.adminRequests.content.getRoomData());
             });
-            app.post('/api/setRoom', upload.array('gallery'), async (req, res) => {
+            app.post('/api/admin/setRoom', upload.array('gallery'), async (req, res) => {
                 let jsonData = JSON.parse(req.body.jsonData);
                 let convertedGallery = null;
                 try {
@@ -159,7 +195,7 @@ async function init() {
                 }
                 res.json(await content.adminRequests.content.setRoom(jsonData.id, jsonData.name, jsonData.info, jsonData.desc, jsonData.price, convertedGallery));
             });
-            app.post('/api/addRoom', upload.array('gallery'), async (req, res) => {
+            app.post('/api/admin/addRoom', upload.array('gallery'), async (req, res) => {
                 let jsonData = JSON.parse(req.body.jsonData);
                 let convertedGallery = null;
                 try {
@@ -174,13 +210,13 @@ async function init() {
                 }
                 res.json(await content.adminRequests.content.addRoom(jsonData.id, jsonData.name, jsonData.info, jsonData.desc, jsonData.price, convertedGallery));
             });
-            app.post('/api/deleteRoom', async (req, res) => {
+            app.post('/api/admin/deleteRoom', async (req, res) => {
                 res.json(await content.adminRequests.content.deleteRoom(req.body.id));
             });
-            app.get('/api/banquetDetails', async (req, res) => {
+            app.get('/api/admin/banquetDetails', async (req, res) => {
                 res.json(await content.adminRequests.content.getBanquetData());
             });
-            app.post('/api/setBanquet', upload.array('gallery'), async (req, res) => {
+            app.post('/api/admin/setBanquet', upload.array('gallery'), async (req, res) => {
                 let jsonData = JSON.parse(req.body.jsonData);
                 let convertedGallery = null;
                 try {
@@ -195,7 +231,7 @@ async function init() {
                 }
                 res.json(await content.adminRequests.content.setBanquet(jsonData.id, jsonData.desc, jsonData.price, convertedGallery, jsonData.capacity));
             });
-            app.post('/api/addBanquet', upload.array('gallery'), async (req, res) => {
+            app.post('/api/admin/addBanquet', upload.array('gallery'), async (req, res) => {
                 let jsonData = JSON.parse(req.body.jsonData);
                 let convertedGallery = null;
                 try {
@@ -210,13 +246,13 @@ async function init() {
                 }
                 res.json(await content.adminRequests.content.addBanquet(jsonData.desc, jsonData.price, convertedGallery, jsonData.capacity));
             });
-            app.post('/api/deleteBanquet', async (req, res) => {
+            app.post('/api/admin/deleteBanquet', async (req, res) => {
                 res.json(await content.adminRequests.content.deleteBanquet(req.body.id));
             });
-            app.get('/api/bookingData', async(req, res)=>{
+            app.get('/api/admin/bookingData', async(req, res)=>{
                 res.json(await content.adminRequests.booking.bookingData());
             });
-            app.post('/api/acceptBooking', async(req, res)=>{
+            app.post('/api/admin/acceptBooking', async(req, res)=>{
                 if(req.body.type == '0'){
                     sendMail(req.body.email, 'Your Room Booking Confirmation', 'Your Room Booking At Hotel Grand Reagl Is Confirmed');
                     res.json(await content.adminRequests.booking.acceptRoomBooking(req.body.id));
@@ -225,7 +261,7 @@ async function init() {
                     res.json(await content.adminRequests.booking.acceptBanquetBooking(req.body.id));
                 }
             });
-            app.post('/api/declineBooking', async(req, res)=>{
+            app.post('/api/admin/declineBooking', async(req, res)=>{
                 if(req.body.type == '0'){
                     sendMail(req.body.email, 'Your Room Booking Declined', 'Your Room Booking At Hotel Grand Reagl Is Declined');
                     res.json(await content.adminRequests.booking.declineRoomBooking(req.body.id));
@@ -234,7 +270,7 @@ async function init() {
                     res.json(await content.adminRequests.booking.declineBanquetBooking(req.body.id));
                 }
             });
-            app.get('/api/feedbackData', async (req, res) => {
+            app.get('/api/admin/feedbackData', async (req, res) => {
                 console.log("|===================================|\nClient Request Received \n|===================================|\n");
                 console.log("Endpoint = " + '/feedbackData' + '\nProcessing Request');
                 if (credsData.verifyRequest(req.headers.cookie)) {
@@ -262,7 +298,7 @@ async function init() {
                     })
                 }
             });
-            app.post('/api/setFeedback', async (req, res) => {
+            app.post('/api/admin/setFeedback', async (req, res) => {
                 console.log("|===================================|\nClient Request Received \n|===================================|\n");
                 console.log("Endpoint = " + '/setFeedback' + '\nProcessing Request');
                 if (credsData.verifyRequest(req.headers.cookie)) {
@@ -289,7 +325,7 @@ async function init() {
                     })
                 }
             });
-            app.post('/api/deleteFeedback', async (req, res) => {
+            app.post('/api/admin/deleteFeedback', async (req, res) => {
                 if (credsData.verifyRequest(req.headers.cookie)) {
                     console.log("Inside Request Processing\n1) Sesion Valid");
                     try {
@@ -314,17 +350,17 @@ async function init() {
                     })
                 }
             });
-            app.post('/api/deleteEnquiry', async(req, res)=>{
+            app.post('/api/admin/deleteEnquiry', async(req, res)=>{
                 res.json(await content.adminRequests.enquiry.deleteEnquiry(req.body.id));
             });
-            app.get('/api/enquiryData', async(req, res)=>{
+            app.get('/api/admin/enquiryData', async(req, res)=>{
                 let data = await content.adminRequests.enquiry.enquiryDetails();
                 if(data.status) data.content.forEach(doc => {
                     content.adminRequests.enquiry.setEnquiry(doc._id, 'read');
                 });
                 res.json(data);
             });
-            app.post('/api/replyEnquiry', (req, res)=>{
+            app.post('/api/admin/replyEnquiry', (req, res)=>{
                 content.adminRequests.enquiry.setEnquiry(req.body.id, 'replied');
                 sendMail(req.body.mailid, 'Reply From Hotel Grand Regal', req.body.reply);
                 res.json({status:true, content:null});
