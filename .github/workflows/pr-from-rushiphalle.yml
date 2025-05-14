@@ -3,7 +3,7 @@ name: Deploy Admin & User Portals
 on:
   push:
     branches:
-      - mai
+      - main
 
 jobs:
   deploy-admin:
