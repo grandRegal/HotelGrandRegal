@@ -6,11 +6,19 @@ on:
 
 jobs:
   check-user:
+    if: github.event.pull_request.user.login == 'rushiphalle'
     runs-on: ubuntu-latest
     steps:
-      - name: Log PR author
-        run: echo "PR created by ${{ github.event.pull_request.user.login }}"
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Run only for rushiphalle
-        if: ${{ github.event.pull_request.user.login == 'rushiphalle' }}
+      - name: Run action for PR from rushiphalle
         run: echo "This PR is created by rushiphalle!"
+      
+      - name: Merge PR if it's from rushiphalle
+        if: github.event.pull_request.user.login == 'rushiphalle'
+        uses: peter-evans/merge-pull-request@v3
+        with:
+          pull-request: ${{ github.event.pull_request.number }}
+          merge-method: squash  # You can also use 'merge' or 'rebase'
+          token: ${{ secrets.GITHUB_TOKEN }}
