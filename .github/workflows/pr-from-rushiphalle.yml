@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, synchronize]
 
 permissions:
-  contents: read  # Still required to fetch code
+  contents: read  # This is still required for checkout if needed
 
 jobs:
   auto-merge:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Echo PR info
+      - name: Echo PR Info
         run: echo "PR #${{ github.event.pull_request.number }} by ${{ github.event.pull_request.user.login }}"
 
       - name: Merge PR using Personal Token
