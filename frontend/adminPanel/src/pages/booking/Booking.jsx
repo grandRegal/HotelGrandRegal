@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import style from './Booking.module.css';
 import expand from './Expand.module.css';
 import fetchData from '../../../utils/fetcher';
-import { popup } from 'react-components';
+import { popup } from '../../components/popup/popup';
 
 export default function Booking() {
     let formatDate = (dateStr) => {

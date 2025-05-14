@@ -14,7 +14,7 @@ import billBox from './billBox.module.css';
 import Popup from '../../components/popup/Popup';
 
 import fetchData from '../../../../adminPanel/utils/fetcher';
-import { popup } from "../../../../../../../../myPackages/javaScript/myPackage/reactComponents";
+import  {popup}  from "../../../../adminPanel/src/components/popup/popup";
 
 function TarrifBox({ tarrif }) {
     const [banquetMenu, setBanquetMenu] = useState(null);

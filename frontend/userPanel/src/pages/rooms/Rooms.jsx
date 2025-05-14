@@ -3,7 +3,7 @@ import Popup from "../../components/popup/Popup";
 
 import { roomData } from '../../utils/StaticDataFetcher';
 import brokerLogo from './assets/broker.png';
-import selfLogo from '/home/lucifer/Pictures/Screenshots/p.png';
+import selfLogo from './assets/broker.png';
 import fetchData from '../../../../adminPanel/utils/fetcher';
 
 import roomCatelog from './roomCatelog.module.css';

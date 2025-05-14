@@ -7,7 +7,7 @@ import banquetDetails from './BanquetDetails.module.css';
 import tarrif from './Tarrif.module.css';
 import fetchData from '../../../utils/fetcher';
 import { useNavigate } from 'react-router-dom';
-import { popup } from 'react-components';
+import { popup } from '../../components/popup/popup';
 import ImageHandler from '../../components/ImageHandler/ImageHandler';
 
 let holder = 'https://res.cloudinary.com/de9mmhibr/image/upload/v1745314468/a-minimal-ui-style-circular-button-with-_DFHCW0z7Q_-W_g-dWduNuw_VvoknBqXSAq2DjSNNTwdtg_t7d1yk.jpg';
