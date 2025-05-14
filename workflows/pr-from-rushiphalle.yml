@@ -6,11 +6,11 @@ on:
 
 jobs:
   check-user:
-    if: github.event.pull_request.user.login == 'rushiphalle'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Log PR author
+        run: echo "PR created by ${{ github.event.pull_request.user.login }}"
 
-      - name: Run action for PR from rushiphalle
+      - name: Run only for rushiphalle
+        if: ${{ github.event.pull_request.user.login == 'rushiphalle' }}
         run: echo "This PR is created by rushiphalle!"
