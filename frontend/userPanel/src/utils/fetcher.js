@@ -1,4 +1,4 @@
-const apiURL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api/admin";
+const apiURL = import.meta.env.VITE_SERVER_URL || "https://api.hotelgrandregal.com/api/";
 
 export default async function (path, method, jsonData = null, formData= null, credentials = 'include'){
     console.log("In Fetched, Request Received");
