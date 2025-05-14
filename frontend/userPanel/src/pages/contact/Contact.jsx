@@ -5,7 +5,7 @@ import fb from './assets/fb.png';
 import insta from './assets/insta.png';
 import x from './assets/x.png';
 import wp from './assets/wp.png';
-import fetchData from '../../../../adminPanel/utils/fetcher';
+import fetchData from '../../utils/fetcher';
 
 function FAQ() {
   return (

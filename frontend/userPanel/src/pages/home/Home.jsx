@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { homeData, global } from '../../utils/StaticDataFetcher';
 import { getRatings } from '../../utils/DynamicDataFetcher';
 
-import fetchData from '../../../../adminPanel/utils/fetcher';
+import fetchData from '../../utils/fetcher';
 
 import StarBox from "../../components/startbox/StarBox.jsx";
 

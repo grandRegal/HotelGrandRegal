@@ -4,7 +4,7 @@ import Popup from "../../components/popup/Popup";
 import { roomData } from '../../utils/StaticDataFetcher';
 import brokerLogo from './assets/broker.png';
 import selfLogo from './assets/broker.png';
-import fetchData from '../../../../adminPanel/utils/fetcher';
+import fetchData from '../../utils/fetcher';
 
 import roomCatelog from './roomCatelog.module.css';
 import roomInfo from './roomInfo.module.css';

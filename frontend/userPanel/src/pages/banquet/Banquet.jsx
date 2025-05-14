@@ -13,8 +13,8 @@ import billBox from './billBox.module.css';
 
 import Popup from '../../components/popup/Popup';
 
-import fetchData from '../../../../adminPanel/utils/fetcher';
-import  {popup}  from "../../../../adminPanel/src/components/popup/popup";
+import fetchData from '../../utils/fetcher';
+import  {popup}  from "../../components/popup2/popup";
 
 function TarrifBox({ tarrif }) {
     const [banquetMenu, setBanquetMenu] = useState(null);
