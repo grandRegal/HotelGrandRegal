@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: admin-frontend
+        working-directory: ./frontend/adminPanel
 
     steps:
       - name: Checkout Code
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: user-frontend
+        working-directory: ./frontend/userPanel
 
     steps:
       - name: Checkout Code
