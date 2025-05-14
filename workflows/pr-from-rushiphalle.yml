@@ -1,0 +1,16 @@
+name: PR from rushiphalle
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  check-user:
+    if: github.event.pull_request.user.login == 'rushiphalle'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run action for PR from rushiphalle
+        run: echo "This PR is created by rushiphalle!"
