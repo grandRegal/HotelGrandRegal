@@ -9,9 +9,6 @@ jobs:
   deploy-admin:
     name: Deploy Admin Frontend
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: /  # Correct folder for Admin Panel
 
     steps:
       - name: Checkout Code
@@ -21,7 +18,7 @@ jobs:
         run: npm install -g vercel
 
       - name: Deploy Admin to Vercel
-        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --cwd frontend/adminPanel --prod --token ${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID_ADMIN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
@@ -29,9 +26,6 @@ jobs:
   deploy-user:
     name: Deploy User Frontend
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: /  # Update to the correct folder for User Panel
 
     steps:
       - name: Checkout Code
@@ -41,7 +35,7 @@ jobs:
         run: npm install -g vercel
 
       - name: Deploy User to Vercel
-        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --cwd frontend/userPanel --prod --token ${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID_USER }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER }}
