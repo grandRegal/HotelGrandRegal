@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend/adminPanel  # Correct folder for Admin Panel
+        working-directory: /  # Correct folder for Admin Panel
 
     steps:
       - name: Checkout Code
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend/userPanel  # Update to the correct folder for User Panel
+        working-directory: /  # Update to the correct folder for User Panel
 
     steps:
       - name: Checkout Code
