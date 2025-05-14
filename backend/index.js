@@ -249,6 +249,12 @@ async function init() {
             app.post('/api/admin/deleteBanquet', async (req, res) => {
                 res.json(await content.adminRequests.content.deleteBanquet(req.body.id));
             });
+            app.get('/api/admin/getTarrif', async(req, res)=>{
+                res.json(await content.adminRequests.content.getTarrif());
+            });
+            app.post('/api/admin/addTarrif', async(req, res)=>{
+                res.json(await content.adminRequests.content.addTarrif(req.body.name, req.body.isVeg, req.body.price, req.body.items));
+            });
             app.get('/api/admin/bookingData', async(req, res)=>{
                 res.json(await content.adminRequests.booking.bookingData());
             });

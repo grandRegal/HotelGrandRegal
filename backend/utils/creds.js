@@ -75,8 +75,8 @@ class Creds {
   async verifyRequest(cookie) {
     await this.ready;
     console.log("Verifying Request", cookie);
-    const user = await this.collection.findOne({ cookies: cookie });
-    return !user;
+    const user = await this.collection.findOne({ cookies: cookie.slice(12, ) });
+    return !!user;
   }
 
   // Logout user by removing cookie

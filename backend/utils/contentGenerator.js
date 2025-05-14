@@ -27,18 +27,18 @@ module.exports = async function () {
         getBanquetMenu: async () => await getBanquetMenu(database),
         bookRoom: async (roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost) => await bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost, database),
         bookBanquet: async (name, fname, lname, mobile, email, date, time, duration, tarrif, plan, guestCount, additional, cost, shownCost) => await bookBanquet(name, fname, lname, mobile, email, date, time, duration, tarrif, plan, guestCount, additional, cost, shownCost, database),
-        enquire: async(fname, lnmae, mobile, email, reason, message) => await enquire(fname, lnmae, mobile, email, reason, message, database)
+        enquire: async (fname, lnmae, mobile, email, reason, message) => await enquire(fname, lnmae, mobile, email, reason, message, database)
       },
       adminRequests: {
         dashboard: {
           getDashboard: async () => await getEnumStats(database),
         },
-        booking:{
-          acceptRoomBooking: async(id) => await acceptRoomBooking(id, database),
-          acceptBanquetBooking: async(id) => await acceptBanquetBooking(id, database),
-          declineRoomBooking: async(id) => await declineRoomBooking(id, database),
-          declineBanquetBooking: async(id) => await declineBanquetBooking(id, database),
-          bookingData: async() => await bookingData(database)
+        booking: {
+          acceptRoomBooking: async (id) => await acceptRoomBooking(id, database),
+          acceptBanquetBooking: async (id) => await acceptBanquetBooking(id, database),
+          declineRoomBooking: async (id) => await declineRoomBooking(id, database),
+          declineBanquetBooking: async (id) => await declineBanquetBooking(id, database),
+          bookingData: async () => await bookingData(database)
         },
         content: {
           addMenu: async (thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg) => await addMenu(thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg, database),
@@ -46,13 +46,15 @@ module.exports = async function () {
           editMenu: async (id, thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg) => await editMenu(id, thumbnail, name, desc, price, cat, subCat, shefSpecial, isVeg, database),
           deleteMenu: async (id) => await deleteMenu(id, database),
           getRoomData: async () => await getRoomData(database),
-          setRoom: async (id, name, briefInfo, detailedInfo, price, gallery)=> await setRoom(id, name, briefInfo, detailedInfo, price, gallery, database),
-          addRoom: async (id, name, briefInfo, detailedInfo, price, gallery)=> await addRoom(id, name, briefInfo, detailedInfo, price, gallery, database),
+          setRoom: async (id, name, briefInfo, detailedInfo, price, gallery) => await setRoom(id, name, briefInfo, detailedInfo, price, gallery, database),
+          addRoom: async (id, name, briefInfo, detailedInfo, price, gallery) => await addRoom(id, name, briefInfo, detailedInfo, price, gallery, database),
           deleteRoom: async (id) => await deleteRoom(id, database),
           getBanquetData: async () => await getBanquetData(database),
-          setBanquet: async (id, detailedInfo, price, gallery, capacity)=> await setBanquet(id, detailedInfo, price, gallery, capacity, database),
-          addBanquet: async (detailedInfo, price, gallery, capacity)=> await addBanquet(id, name, briefInfo, detailedInfo, price, gallery, capacity, database),
+          setBanquet: async (id, detailedInfo, price, gallery, capacity) => await setBanquet(id, detailedInfo, price, gallery, capacity, database),
+          addBanquet: async (detailedInfo, price, gallery, capacity) => await addBanquet(id, name, briefInfo, detailedInfo, price, gallery, capacity, database),
           deleteBanquet: async (id) => await deleteBanquet(id, database),
+          addTarrif: async (name, isVeg, price, items) => await addTarrif(name, isVeg, price, items, database),
+          getTarrif: async () => await getAdminTarrif(database)
         },
         feedback: {
           getFeebacks: async () => await getFeedbacks(database),
@@ -60,10 +62,10 @@ module.exports = async function () {
           setFeedback: async (feedbackId, command) => await setFeedback(feedbackId, command, database),
           replyFeedback: async (feedbackId, reply) => await replyFeedback(feedbackId, reply),
         },
-        enquiry:{
-          setEnquiry: async(id, status) => await setEnquiry(id, status, database),
-          enquiryDetails: async() => await enquiryDetails(database),
-          deleteEnquiry: async(id) => await deleteEnquiry(id, database)
+        enquiry: {
+          setEnquiry: async (id, status) => await setEnquiry(id, status, database),
+          enquiryDetails: async () => await enquiryDetails(database),
+          deleteEnquiry: async (id) => await deleteEnquiry(id, database)
         }
       }
     }
@@ -183,7 +185,7 @@ async function bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest,
   }
 }
 
-async function bookBanquet(name, fname, lname, mobile, email, date, time, duration, tarrif, plan, guestCount, additional, cost, shownCost, database){
+async function bookBanquet(name, fname, lname, mobile, email, date, time, duration, tarrif, plan, guestCount, additional, cost, shownCost, database) {
   let dataToInsert = {
     name: name,
     fname: fname,
@@ -196,12 +198,12 @@ async function bookBanquet(name, fname, lname, mobile, email, date, time, durati
     tarrif: tarrif,
     plan: plan,
     guestCount: parseInt(guestCount),
-    cost : parseInt(cost),
+    cost: parseInt(cost),
     costShown: parseInt(shownCost),
     status: 'pending'
   };
-  if (additional.length>0) {
-    dataToInsert.additional = additional.map((service)=>service.label);
+  if (additional.length > 0) {
+    dataToInsert.additional = additional.map((service) => service.label);
   }
   try {
     await database.collection("banquetBookings").insertOne(dataToInsert);
@@ -445,22 +447,24 @@ async function getRoomData(database) {
   }
 }
 
-async function setRoom(id, name, briefInfo, detailedInfo, price, gallery, database){
-  try{
-    let ack = await database.collection('rooms').updateOne({_id: new ObjectId(id)}, {$set: {
-      name: name, 
-      briefInfo: briefInfo, 
-      detailedInfo: detailedInfo,
-      price: price,
-      gallery: gallery
-    }})
-    return ack.modifiedCount ==1 ? {status: true, content: null} : { status: false, reason: "ID Not Found"}
-  }catch(err){
-    return { status: false, reason: "Internal Error" + err.message}
+async function setRoom(id, name, briefInfo, detailedInfo, price, gallery, database) {
+  try {
+    let ack = await database.collection('rooms').updateOne({ _id: new ObjectId(id) }, {
+      $set: {
+        name: name,
+        briefInfo: briefInfo,
+        detailedInfo: detailedInfo,
+        price: price,
+        gallery: gallery
+      }
+    })
+    return ack.modifiedCount == 1 ? { status: true, content: null } : { status: false, reason: "ID Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internal Error" + err.message }
   }
 }
 
-async function addRoom(id, name, briefInfo, detailedInfo, price, gallery, database){
+async function addRoom(id, name, briefInfo, detailedInfo, price, gallery, database) {
   const roomData = {
     name: name,
     price: price,
@@ -501,7 +505,7 @@ async function addRoom(id, name, briefInfo, detailedInfo, price, gallery, databa
       { logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1744604488/Hot_and_Cold_Water_gem2ch.png", name: "Hot & Cold Water" },
       { logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1744604488/Kettle_p2atwl.png", name: "Kettle" },
       { logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1744604486/Celling_Fan_sulqjy.png", name: "Ceiling Fans" }
-  ],
+    ],
     rules: [
       { logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1744609101/pngtree-vector-business-man-icon-png-image_925673-removebg-preview_cdzbka.png", name: "Primary Guest Should Be 18 Years of Age" },
       { logo: "https://res.cloudinary.com/de9mmhibr/image/upload/v1744608969/684833_ftmosf.png", name: "Aadhar is Requires as ID proof" },
@@ -513,20 +517,20 @@ async function addRoom(id, name, briefInfo, detailedInfo, price, gallery, databa
     ],
     broker: "https://www.makemytrip.com/hotels/grand_regal-details-uran_islampur.html"
   };
-  try{
+  try {
     let ack = await database.collection('rooms').insertOne(roomData);
-    return ack.acknowledged ? {status: true, content: null} : { status: false, reason: "ID Not Found"}
-  }catch(err){
-    return { status: false, reason: "Internal Error" + err.message}
+    return ack.acknowledged ? { status: true, content: null } : { status: false, reason: "ID Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internal Error" + err.message }
   }
 }
 
-async function deleteRoom(id, database){
-  try{
-    let ack = await database.collection('rooms').deleteOne({_id: new ObjectId(id)});
-    return ack.deletedCount == 1 ? {status: true, content: null} : {status: false, reason:"Id Not Found"}
-  }catch(err){
-    return {status: false, reason:"Internsl Err" + err}
+async function deleteRoom(id, database) {
+  try {
+    let ack = await database.collection('rooms').deleteOne({ _id: new ObjectId(id) });
+    return ack.deletedCount == 1 ? { status: true, content: null } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internsl Err" + err }
   }
 }
 
@@ -552,22 +556,24 @@ async function getBanquetData(database) {
   }
 }
 
-async function setBanquet(id, detailedInfo, price, gallery, capacity, database){
-  try{
-    let ack = await database.collection('banquets').updateOne({_id: new ObjectId(id)}, {$set: {
-      overview: detailedInfo, 
-      price: parseInt(price),
-      gallery: gallery,
-      minGuestCount: parseInt(capacity)
-    }})
-    return ack.modifiedCount == 1 ? {status: true, content: null} : { status: false, reason: "ID Not Found"}
-  }catch(err){
-    return { status: false, reason: "Internal Error" + err.message}
+async function setBanquet(id, detailedInfo, price, gallery, capacity, database) {
+  try {
+    let ack = await database.collection('banquets').updateOne({ _id: new ObjectId(id) }, {
+      $set: {
+        overview: detailedInfo,
+        price: parseInt(price),
+        gallery: gallery,
+        minGuestCount: parseInt(capacity)
+      }
+    })
+    return ack.modifiedCount == 1 ? { status: true, content: null } : { status: false, reason: "ID Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internal Error" + err.message }
   }
 }
 
-async function addBanquet(detailedInfo, price, gallery, capacity, database){
-  const banquetData =  {
+async function addBanquet(detailedInfo, price, gallery, capacity, database) {
+  const banquetData = {
     overview: detailedInfo,
     features: [
       { logo: "https://example.com/logos/ac.png", name: "Air Conditioning" },
@@ -583,56 +589,56 @@ async function addBanquet(detailedInfo, price, gallery, capacity, database){
       { logo: "https://example.com/logos/catering.png", name: "Catering", rate: 20000 }
     ]
   };
-  try{
+  try {
     let ack = await database.collection('banquets').insertOne(banquetData);
-    return ack.acknowledged ? {status: true, content: null} : { status: false, reason: "ID Not Found"}
-  }catch(err){
-    return { status: false, reason: "Internal Error" + err.message}
+    return ack.acknowledged ? { status: true, content: null } : { status: false, reason: "ID Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internal Error" + err.message }
   }
 }
 
-async function deleteBanquet(id, database){
-  try{
-    let ack = await database.collection('banquets').deleteOne({_id: new ObjectId(id)});
-    return ack.deletedCount == 1 ? {status: true, content: null} : {status: false, reason:"Id Not Found"}
-  }catch(err){
-    return {status: false, reason:"Internsl Err" + err}
+async function deleteBanquet(id, database) {
+  try {
+    let ack = await database.collection('banquets').deleteOne({ _id: new ObjectId(id) });
+    return ack.deletedCount == 1 ? { status: true, content: null } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internsl Err" + err }
   }
 }
 
-async function enquire(fname, lname, mobile, email, reason, message, database){
-  try{
-    let ack = await database.collection('enquiries').insertOne({fname:fname, lname:lname, mobile:mobile, email:email, reason:reason, message:message, status:'unread'})
-    return ack.acknowledged ? {status:true, content:null} : {status:false, reason:"Opps Some Serious Issues in our system"}
-  }catch(err){
-    return {status:false, content: "Internal Error" + err}
+async function enquire(fname, lname, mobile, email, reason, message, database) {
+  try {
+    let ack = await database.collection('enquiries').insertOne({ fname: fname, lname: lname, mobile: mobile, email: email, reason: reason, message: message, status: 'unread' })
+    return ack.acknowledged ? { status: true, content: null } : { status: false, reason: "Opps Some Serious Issues in our system" }
+  } catch (err) {
+    return { status: false, content: "Internal Error" + err }
   }
 }
 
-async function enquiryDetails(database){
-  try{
+async function enquiryDetails(database) {
+  try {
     let ack = await database.collection('enquiries').find({}).toArray();
-    return {status: true, content: ack}
-  }catch(err){
-    return {status: false, reason: "Internal Err " + err.message}
+    return { status: true, content: ack }
+  } catch (err) {
+    return { status: false, reason: "Internal Err " + err.message }
   }
 }
 
-async function setEnquiry(id, status, database){
-  try{
-    let ack = await database.collection('enquiries').updateOne({_id: new ObjectId(id)}, {$set:{status:status}})
-    return {status: true, content: ack}
-  }catch(err){
-    return {status: false, reason: "Internal Err " + err.message}
+async function setEnquiry(id, status, database) {
+  try {
+    let ack = await database.collection('enquiries').updateOne({ _id: new ObjectId(id) }, { $set: { status: status } })
+    return { status: true, content: ack }
+  } catch (err) {
+    return { status: false, reason: "Internal Err " + err.message }
   }
 }
 
-async function deleteEnquiry(id, database){
-  try{
-    let ack = await database.collection('enquiries').deleteOne({_id: new ObjectId(id)});
-    return ack.deletedCount == 1 ?  {status: true, content: ack} : {status: false, reason: "Id Not Found"}
-  }catch(err){
-    return {status: false, reason: "Internal Err " + err.message}
+async function deleteEnquiry(id, database) {
+  try {
+    let ack = await database.collection('enquiries').deleteOne({ _id: new ObjectId(id) });
+    return ack.deletedCount == 1 ? { status: true, content: ack } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Internal Err " + err.message }
   }
 }
 
@@ -663,59 +669,100 @@ async function getEnumStats(db) {
 
     result.push(enumCount);
   }
-  return {status: true, content:result};
+  return { status: true, content: result };
 }
 
-async function acceptRoomBooking(id, database){
-  try{
-    let ack = await database.collection('room_bookings').updateOne({_id:new ObjectId(id)}, {$set:{status:'accepted'}});
+async function acceptRoomBooking(id, database) {
+  try {
+    let ack = await database.collection('room_bookings').updateOne({ _id: new ObjectId(id) }, { $set: { status: 'accepted' } });
     console.log("here in accept Booking ", ack);
-    return ack.modifiedCount == 1  ? {status:true, content:null} : {status:false, reason:"Id Not Found"}
-  }catch(err){
-    return {status:false, reason:"Error " + err.message}
+    return ack.modifiedCount == 1 ? { status: true, content: null } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Error " + err.message }
   }
 }
 
 
-async function acceptBanquetBooking(id, database){
-  try{
-    let ack = await database.collection('banquetBookings').updateOne({_id:new ObjectId(id)}, {$set:{status:'accepted'}});
+async function acceptBanquetBooking(id, database) {
+  try {
+    let ack = await database.collection('banquetBookings').updateOne({ _id: new ObjectId(id) }, { $set: { status: 'accepted' } });
     console.log("here in accept Banquet Booking ", ack);
-    return ack.modifiedCount == 1  ? {status:true, content:null} : {status:false, reason:"Id Not Found"}
-  }catch(err){
-    return {status:false, reason:"Error " + err.message}
+    return ack.modifiedCount == 1 ? { status: true, content: null } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Error " + err.message }
   }
 }
 
-async function declineRoomBooking(id, database){
-  try{
-    let ack = await database.collection('room_bookings').updateOne({_id:new ObjectId(id)}, {$set:{status:'declined'}});
+async function declineRoomBooking(id, database) {
+  try {
+    let ack = await database.collection('room_bookings').updateOne({ _id: new ObjectId(id) }, { $set: { status: 'declined' } });
     console.log("here in decline  Booking ", ack);
-    return ack.modifiedCount == 1  ? {status:true, content:null} : {status:false, reason:"Id Not Found"}
-  }catch(err){
-    return {status:false, reason:"Error " + err.message}
+    return ack.modifiedCount == 1 ? { status: true, content: null } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Error " + err.message }
   }
 }
 
 
-async function declineBanquetBooking(id, database){
-  try{
-    let ack = await database.collection('banquetBookings').updateOne({_id:new ObjectId(id)}, {$set:{status:'declined'}});
+async function declineBanquetBooking(id, database) {
+  try {
+    let ack = await database.collection('banquetBookings').updateOne({ _id: new ObjectId(id) }, { $set: { status: 'declined' } });
     console.log("here in decline Banquet Booking ", ack);
-    return ack.modifiedCount == 1  ? {status:true, content:null} : {status:false, reason:"Id Not Found"}
-  }catch(err){
-    return {status:false, reason:"Error " + err.message}
+    return ack.modifiedCount == 1 ? { status: true, content: null } : { status: false, reason: "Id Not Found" }
+  } catch (err) {
+    return { status: false, reason: "Error " + err.message }
   }
 }
 
-async function bookingData(database){
-  try{
+async function bookingData(database) {
+  try {
     let ack1 = await database.collection('room_bookings').find({}).toArray();
     let ack2 = await database.collection('banquetBookings').find({}).toArray();
     console.log([[...ack1], [...ack2]])
-    return {status:true, content: [[...ack1], [...ack2]]}
-  }catch(err){
+    return { status: true, content: [[...ack1], [...ack2]] }
+  } catch (err) {
     console.log(err);
-    return {status: false, reason:"error " + err.message}
+    return { status: false, reason: "error " + err.message }
+  }
+}
+
+async function addTarrif(name, isVeg, price, items, database) {
+  try{
+    let objToPush= {
+      name: name, 
+      price: parseInt(price),
+      items: items.map((item)=>{
+        return {logo:"#", name:item}
+      })
+    }
+    let data = isVeg ?  await database.collection('tarrifs').updateOne({cat: 'veg'}, { $push: { details: objToPush } }) : await database.collection('tarrifs').updateOne({cat:'non veg'}, { $push: { details: objToPush } })
+  }catch(err){
+    return {
+      status: false,
+      reason: "Error While Fetching Admin Tarrif\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function getAdminTarrif(database) {
+  try {
+    let data = await database.collection("tarrifs").find({}).toArray();
+    data[0].details = data[0].details.map((d) => {
+      d.isVeg = true;
+      return d;
+    })
+    data[1].details = data[1].details.map((d) => {
+      d.isVeg = false;
+      return d;
+    })
+    return {
+      status: true,
+      content: [...data[0].details, ...data[1].details]
+    }
+  } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching Admin Tarrif\n Detailed Error = " + err.message
+    }
   }
 }

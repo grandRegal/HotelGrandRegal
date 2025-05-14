@@ -422,11 +422,23 @@ function BanquetDetails() {
 }
 
 function BanquetTarrif() {
-    const TarrifForm = ({ pId = null, pName = null, pIsVeg = null, pPrice = null, pItems = null }) => {
-        const [items, setItems] = useState([]);
-        const [name, setName] = useState();
-        const [isVeg, setIsVeg] = useState(false);
-        const [price, setPrice] = useState();
+    const [tarrifs, setTarrifs] = useState([]);
+    useEffect(()=>{
+        let fetchRecords = async()=>{
+            const responce = await fetchData('getTarrif', 'GET');
+            if(responce.status){
+                setTarrifs(responce.content);
+            }else{
+                alert("Server Error");
+            }
+        }
+        fetchRecords();
+    }, []);
+    const TarrifForm = ({ pId = null, pName = null, pIsVeg = true, pPrice = null, pItems = [] }) => {
+        const [items, setItems] = useState(pItems);
+        const [name, setName] = useState(pName);
+        const [isVeg, setIsVeg] = useState(pIsVeg);
+        const [price, setPrice] = useState(pPrice);
         const [item, setItem] = useState();
         const handleAdd = () => {
             if (item) {
@@ -434,34 +446,49 @@ function BanquetTarrif() {
                 setItem(null);
             }
         }
+        const handleSubmit =  async(e)=>{
+            e.preventDefault();
+            let dataToSend = {
+                name: name,
+                isVeg: isVeg,
+                price: price,
+                items: items
+            }
+            let responce = await fetchData('addTarrif', 'POST', dataToSend);
+            if(responce.status){
+                alert("Data Addted");
+            }else{
+                alert("Server Error");
+            }
+        }
         return (
-            <form className={tarrif.form} action="">
+            <form className={tarrif.form} action="" onSubmit={handleSubmit}>
                 <div className={tarrif.holder}>
                     <div className={tarrif.section}>
                         <h2>Basic Details</h2>
-                        <hr className={tarrif.hr}/>
+                        <hr className={tarrif.hr} />
                         <div className={tarrif.inputBox}>
                             <label htmlFor="name">Tarrif Name</label>
-                            <input type="text" name="name" id="name" required placeholder='for ex - gold' />
+                            <input type="text" name="name" id="name" required placeholder='for ex - gold' value={name} onChange={(e)=>setName(e.target.value)}/>
                         </div>
                         <div className={tarrif.inputBox}>
                             <label htmlFor="cat">Category</label>
-                            <select name="cat" id="cat">
+                            <select name="cat" id="cat" onChange={(e)=>setIsVeg(e.target.value == 'veg')}>
                                 <option value="veg">Veg</option>
                                 <option value="nonveg">Non Veg</option>
                             </select>
                         </div>
                         <div className={tarrif.inputBox}>
                             <label htmlFor="cost">Cost Per Plate</label>
-                            <input type="number" name="cost" id="cost" required placeholder='for ex -600' />
+                            <input type="number" name="cost" id="cost" required placeholder='for ex -600' value={price} onChange={(e)=>setPrice(e.target.value)}/>
                         </div>
                     </div>
                     <div className={tarrif.section}>
                         <h2>Tarrif Involve</h2>
-                        <hr className={tarrif.hr}/>
+                        <hr className={tarrif.hr} />
                         <ul className={tarrif.includes}>
                             {
-                                items.length> 0 ? items.map((item) =>
+                                items.length > 0 ? items.map((item) =>
                                     <li>{item}</li>
                                 ) : <div>Please Add Items...</div>
                             }
@@ -480,6 +507,13 @@ function BanquetTarrif() {
         <div className={roomDetails.container}>
             <h2 className={dineMenu.header}>Manage Rooms</h2>
             <div className={roomDetails.cardHolder}>
+                { 
+                    tarrifs.map((tarrif)=>
+                        <div>
+                            {JSON.stringify(tarrif)}
+                        </div>
+                    )
+                }
                 <span style={{ height: "300px", aspectRatio: "0.9 / 1.6", fontSize: "100px", fontWeight: "bold", background: "white", textAlign: "center", boxShadow: "0px 0px 5px gray", borderRadius: "25px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }} onClick={() => popup(TarrifForm, {})}>+</span>
             </div>
         </div>
@@ -492,7 +526,7 @@ function BanquetMenu() {
 
 function Gallery() {
 
-}
+} 
 
 export default function Content() {
     const [contentManager, setContentManager] = useState(<DineMenu />);
