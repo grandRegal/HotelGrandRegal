@@ -82,7 +82,7 @@ function NavOptions(){
                             <li id=  {selected == '4' ? style.selectedM : ""}>
                                 <a href="/Banquet-hall" onClick={()=>{clickBtn(event, '/Banquet-hall', '4')}}>
                                     <img src={hallLogo} alt="" />
-                                    <h6>Banquote</h6>
+                                    <h6>Banquet</h6>
                                 </a>
                             </li>
                             <li id=  {selected == '1' ? style.selectedM : ""}>
@@ -109,7 +109,7 @@ function NavOptions(){
                             <a href="/" onClick={(e)=>{clickBtn(e, '/', '1')}}><li onClick={()=>{clickBtn('/', '1')}} id=  {selected == '1' ? style.selected : ""}>Home</li></a>
                             <a href="/Dine" onClick={(e)=>{clickBtn(e, '/Dine', '2')}}><li onClick={()=>{clickBtn('/Dine', '2')}} id=  {selected == '2' ? style.selected : ""}>Dine</li></a>
                             <a href="/Rooms" onClick={(e)=>{clickBtn(e, '/Rooms', '3')}}><li onClick={()=>{clickBtn('/Rooms', '3')}} id=  {selected == '3' ? style.selected : ""}>Rooms</li></a>
-                            <a href="/Banquet-hall" onClick={(e)=>{clickBtn(e, '/Banquet-hall', '4')}}><li onClick={()=>{clickBtn('/Banquet-hall', '4')}} id=  {selected == '4' ? style.selected : ""}>Banquote Hall</li></a>
+                            <a href="/Banquet-hall" onClick={(e)=>{clickBtn(e, '/Banquet-hall', '4')}}><li onClick={()=>{clickBtn('/Banquet-hall', '4')}} id=  {selected == '4' ? style.selected : ""}>Banquet Hall</li></a>
                             <a href="/Contact-us" onClick={(e)=>{clickBtn(e, '/Contact-us', '5')}}><li onClick={()=>{clickBtn('/Contact-us', '5')}} id=  {selected == '5' ? style.selected : ""}>Contact Us</li></a>
                         </ul>;
 

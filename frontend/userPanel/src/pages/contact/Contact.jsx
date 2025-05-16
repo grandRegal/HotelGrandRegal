@@ -66,7 +66,7 @@ function ContactDetails() {
               <a href='https://wa.me/+919822341166'><img src={wp} alt="" /></a>
             </div>
             <a href='mailto:grandregal1431@gmail.com'>grandregal1431@gmail.com</a>
-            <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="917209210406">| 7209210406</a></span>
+            <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="919850359950">| 9850359950</a></span>
           </div>
         </div>
       </div>

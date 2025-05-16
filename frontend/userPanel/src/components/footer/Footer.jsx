@@ -26,7 +26,7 @@ export default function Footer() {
                         <a href='https://wa.me/+919822341166'><img src={wp} alt="" /></a>
                     </div>
                     <a href='mailto:grandregal1431@gmail.com'>grandregal1431@gmail.com</a>
-                                <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="917209210406">| 7209210406</a></span>
+                                <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="919850359950">| 9850359950</a></span>
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "3em", justifyContent: "center" }}>
                     <div id={style.quickLinks}>
@@ -35,11 +35,10 @@ export default function Footer() {
                             <h4>Quick Links</h4>
                         </span>
                         <ul>
-                            <li>About Us</li>
-                            <li>Blogs</li>
-                            <li>Gallery</li>
-                            <li>Feedback</li>
-                            <li>Enquiry</li>
+                            <li><a href="https://www.hotelgrandregal.com/About-us">About Us</a></li>
+                            <li><a href="https://www.hotelgrandregal.com/Gallery">Gallery</a></li>
+                            <li><a href="https://www.hotelgrandregal.com/Feedback">Feedback</a></li>
+                            <li><a href="https://www.hotelgrandregal.com/Contact-us">Enquiry</a></li>
                         </ul>
                     </div>
                     <div id={style.belives}>

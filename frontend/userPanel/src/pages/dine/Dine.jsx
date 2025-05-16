@@ -121,7 +121,7 @@ function ShefSpecial({content}){
     }
     return(
         <div className={shefSpecial.container}>
-            <Header title = "Shef's Special"/>
+            <Header title = "Chef's Special"/>
             <div className={shefSpecial.dishList}>
                 {content.map((dish)=>
                     <div className={shefSpecial.dishBox}>
