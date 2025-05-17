@@ -109,7 +109,7 @@ class Creds {
   }
 
   // Set initial credentials or update if already present
-  async changeCreds(username = 'admin', pwd = 'admin') {
+  async changeCreds(username = 'admin', pwd = 'Admin@123') {
     await this.ready;
     const user = await this.collection.findOne({});
     if (user) {

@@ -5,6 +5,7 @@ import insta from './assets/insta.png';
 import x from './assets/x.png';
 import wp from './assets/wp.png';
 import link from './assets/link.png';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
     return (
@@ -26,19 +27,19 @@ export default function Footer() {
                         <a href='https://wa.me/+919822341166'><img src={wp} alt="" /></a>
                     </div>
                     <a href='mailto:grandregal1431@gmail.com'>grandregal1431@gmail.com</a>
-                                <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="919850359950">| 9850359950</a></span>
+                    <span className={style.mob}><a href="919822341166">9822341166</a>   <a href="919850359950">| 9850359950</a></span>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "3em", justifyContent: "center" }}>
+                <div className={style.quickLinksHolder}>
                     <div id={style.quickLinks}>
                         <span>
                             <img src={link} alt="" />
                             <h4>Quick Links</h4>
                         </span>
                         <ul>
-                            <li><a href="https://www.hotelgrandregal.com/About-us">About Us</a></li>
-                            <li><a href="https://www.hotelgrandregal.com/Gallery">Gallery</a></li>
-                            <li><a href="https://www.hotelgrandregal.com/Feedback">Feedback</a></li>
-                            <li><a href="https://www.hotelgrandregal.com/Contact-us">Enquiry</a></li>
+                            <li><Link to="/About-Us">About Us</Link></li>
+                            <li><Link to="/Gallery">Gallery</Link></li>
+                            <li><Link to="/Feedback">Feedback</Link></li>
+                            <li><Link to="/Contact-Us">Enquiry</Link></li>
                         </ul>
                     </div>
                     <div id={style.belives}>
@@ -47,7 +48,7 @@ export default function Footer() {
                             <h4>Our Belives</h4>
                         </span>
                         <p>
-                            Lorem ipsum dolt fugaplaceat exercitationem incidunt molestiae alias, ipsa est dolorum deserunt vero? Harum, debitiam ixime mollitia!
+                            We believe in heartfelt hospitality, unforgettable experiences, and creating a peaceful retreat where every guest feels truly valued
                         </p>
                     </div>
                 </div>

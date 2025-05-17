@@ -4,9 +4,10 @@ import dineMenu from './DineMenu.module.css';
 import addMenu from './AddMenu.module.css';
 import roomDetails from './RoomDetails.module.css';
 import banquetDetails from './BanquetDetails.module.css';
+import galleryStyle from './Gallery.module.css';
 import tarrif from './Tarrif.module.css';
 import fetchData from '../../../utils/fetcher';
-import { useNavigate } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 import { popup } from '../../components/popup/popup';
 import ImageHandler from '../../components/ImageHandler/ImageHandler';
 
@@ -423,12 +424,12 @@ function BanquetDetails() {
 
 function BanquetTarrif() {
     const [tarrifs, setTarrifs] = useState([]);
-    useEffect(()=>{
-        let fetchRecords = async()=>{
+    useEffect(() => {
+        let fetchRecords = async () => {
             const responce = await fetchData('getTarrif', 'GET');
-            if(responce.status){
+            if (responce.status) {
                 setTarrifs(responce.content);
-            }else{
+            } else {
                 alert("Server Error");
             }
         }
@@ -446,7 +447,7 @@ function BanquetTarrif() {
                 setItem(null);
             }
         }
-        const handleSubmit =  async(e)=>{
+        const handleSubmit = async (e) => {
             e.preventDefault();
             let dataToSend = {
                 name: name,
@@ -455,9 +456,9 @@ function BanquetTarrif() {
                 items: items
             }
             let responce = await fetchData('addTarrif', 'POST', dataToSend);
-            if(responce.status){
+            if (responce.status) {
                 alert("Data Addted");
-            }else{
+            } else {
                 alert("Server Error");
             }
         }
@@ -469,18 +470,18 @@ function BanquetTarrif() {
                         <hr className={tarrif.hr} />
                         <div className={tarrif.inputBox}>
                             <label htmlFor="name">Tarrif Name</label>
-                            <input type="text" name="name" id="name" required placeholder='for ex - gold' value={name} onChange={(e)=>setName(e.target.value)}/>
+                            <input type="text" name="name" id="name" required placeholder='for ex - gold' value={name} onChange={(e) => setName(e.target.value)} />
                         </div>
                         <div className={tarrif.inputBox}>
                             <label htmlFor="cat">Category</label>
-                            <select name="cat" id="cat" onChange={(e)=>setIsVeg(e.target.value == 'veg')}>
+                            <select name="cat" id="cat" onChange={(e) => setIsVeg(e.target.value == 'veg')}>
                                 <option value="veg">Veg</option>
                                 <option value="nonveg">Non Veg</option>
                             </select>
                         </div>
                         <div className={tarrif.inputBox}>
                             <label htmlFor="cost">Cost Per Plate</label>
-                            <input type="number" name="cost" id="cost" required placeholder='for ex -600' value={price} onChange={(e)=>setPrice(e.target.value)}/>
+                            <input type="number" name="cost" id="cost" required placeholder='for ex -600' value={price} onChange={(e) => setPrice(e.target.value)} />
                         </div>
                     </div>
                     <div className={tarrif.section}>
@@ -507,8 +508,8 @@ function BanquetTarrif() {
         <div className={roomDetails.container}>
             <h2 className={dineMenu.header}>Manage Rooms</h2>
             <div className={roomDetails.cardHolder}>
-                { 
-                    tarrifs.map((tarrif)=>
+                {
+                    tarrifs.map((tarrif) =>
                         <div>
                             {JSON.stringify(tarrif)}
                         </div>
@@ -526,10 +527,57 @@ function BanquetMenu() {
 
 function Gallery() {
 
-} 
+    const AddForm = () => {
+        const categories = ["Rooms", "Dine", "Banquet", "Food", "Environment"];
+        const [imgs, setImgs] = useState([]);
+        const [cat, setCat] = useState([categories[0]]);
+        const handleImgChange = (inputImgs) => {
+            setImgs(inputImgs);
+        }
+        const handleAdd = async (e) => {
+            e.preventDefault();
+            console.log("here", imgs);
+            if (imgs.length < 1) {
+                alert("Please Add Atleast One Image");
+                return;
+            }
+            let response = await fetchData('insertGallery/' + cat, 'POST', null, imgs.map((img) => { return { key: 'gallery', value: img } }))
+            if (response.status) {
+                alert("Images Added Successfully");
+            } else {
+                alert("Internal Error" + response.reason);
+            }
+        }
+        return (
+            <form className={galleryStyle.form} onSubmit={handleAdd}>
+                <div className={galleryStyle.catHolder}>
+                    <label htmlFor="cat">Category</label>
+                    <select className={galleryStyle.catList} name="" id="cat" onChange={(e) => setCat(e.target.value)}>
+                        {
+                            categories.map((c) =>
+                                <option value={c}>{c}</option>
+                            )
+                        }
+                    </select>
+                </div>
+                <hr />
+                <div className={galleryStyle.handlerBox}>
+                    <ImageHandler onChange={handleImgChange} />
+                </div>
+                <button className={galleryStyle.addImgs} type="submit">Add Images</button>
+            </form>
+        );
+    }
+
+    return (
+        <div className={galleryStyle.container}>
+            <button className={galleryStyle.addBtn} onClick={() => popup(AddForm, {})}>Add Images</button>
+        </div>
+    );
+}
 
 export default function Content() {
-    const [contentManager, setContentManager] = useState(<DineMenu />);
+    const [contentManager, setContentManager] = useState(<Gallery />);
     const handleChange = (selectedValue) => {
         switch (selectedValue) {
             case 'dineMenu':
@@ -564,7 +612,7 @@ export default function Content() {
                     <option value="banquetDetails">Banquet Details Management</option>
                     <option value="banquetTarrif">Banquet Tarrif Management</option>
                     <option value="banquetMenu">Banquet Menu Management</option>
-                    <option value="gallery">Gallery Management</option>
+                    <option selected value="gallery">Gallery Management</option>
                 </select>
             </div>
             <hr />

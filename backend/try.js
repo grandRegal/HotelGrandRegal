@@ -15,7 +15,7 @@ const dbName = "grandRegalDb";
   
     try {
       await client.connect();
-      createRoomBookingsCollection(client.db("grandRegalDb"));
+      createGalleryCollection(client.db("grandRegalDb"));
     } catch (err) {
       console.error("❌ Error:", err);
     }   
@@ -684,7 +684,38 @@ const dbName = "grandRegalDb";
     }
   }
   
+  async function createGalleryCollection(db) {
+    try {
+      const collectionName = "gallery";
   
+      const schema = {
+        validator: {
+          $jsonSchema: {
+            bsonType: "object",
+            required: [
+              "cat", "imgs"
+            ],
+            properties: {
+              cat: { bsonType: "string" },
+              services: {
+                bsonType: ["array"],
+                items: { bsonType: "string" }
+              }
+            }
+          }
+        }
+      };
+  
+      await db.createCollection(collectionName, schema);
+      console.log("✅ 'Gallery' collection created successfully with validation.");
+    } catch (err) {
+      if (err.codeName === "NamespaceExists") {
+        console.log("⚠️ Collection 'room_bookings' already exists.");
+      } else {
+        console.error("❌ Error creating 'room_bookings' collection:", err.message);
+      }
+    }
+  }
   
 
   async function createBanquetsCollection(db) {

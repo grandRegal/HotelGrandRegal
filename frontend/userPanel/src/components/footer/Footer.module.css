@@ -99,6 +99,11 @@
     font-weight: bold;
 }
 
+#quickLinks a{
+    text-decoration: none;
+    color: white;
+}
+
 #belives{
     max-width: 15em;
     color: white;
@@ -132,4 +137,17 @@
     font-size: 15px;
     width: max-content;
     max-width: 90vw;
+}
+
+.quickLinksHolder{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3em;
+    justify-content: center ;
+}
+
+@media (max-width: 450px) {
+    #belives, .quickLinksHolder{
+        display: none;
+    }
 }

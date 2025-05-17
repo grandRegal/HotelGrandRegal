@@ -7,13 +7,12 @@ import Navbar from './components/navbar/Navbar';
 import Footer from './components/footer/Footer';
 import Home from './pages/home/Home';
 import { useState } from 'react';
-// import Dine from './pages/dine/Dine';
 const Dine = lazy(() => import('./pages/dine/Dine'));
 const Rooms = lazy(() => import('./pages/rooms/Rooms'));
 const Banquet = lazy(() => import('./pages/banquet/Banquet'));
 const Contact = lazy(() => import('./pages/contact/Contact'));
-// import About from './pages/about/About';
-// import Gallery from './pages/gallery/Gallery';
+import About from './pages/about/About';
+import Gallery from './pages/gallery/Gallery';
 import Feedback from './pages/feedback/Feedback';
 import PageNotFound from './pages/badRequest/PageNotFound';
 
@@ -40,8 +39,8 @@ function App() {  return (
             <Route path="/rooms" element={<Suspense fallback={<div>Loading Rooms...</div>}><Rooms /></Suspense>}/>
             <Route path="/Banquet-hall" element={<Suspense fallback={<div>Loading Banquet...</div>}><Banquet /></Suspense>}/>
             <Route path="/contact-us" element={<Suspense fallback={<div>Loading Contact...</div>}><Contact /></Suspense>}/>
-            {/*<Route path="/about" element={<About />}/>
-            <Route path="/gallery" element={<Gallery />}/>*/}
+            <Route path="/About-Us" element={<About />}/>
+            <Route path="/Gallery" element={<Gallery />}/>
             <Route path="/Feedback" element={<Feedback />}/>
             <Route path="*" element={<PageNotFound />}/>
         </Routes>

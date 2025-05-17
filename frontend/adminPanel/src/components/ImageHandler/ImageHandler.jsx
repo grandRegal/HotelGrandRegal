@@ -44,7 +44,7 @@ export default function ImageHandler({onChange, imgSet = []}) {
                     }
                     <div className={styles.addImgBtn}>
                         <label htmlFor="addImg"><img src="https://static.vecteezy.com/system/resources/previews/047/300/155/non_2x/add-image-icon-symbol-design-illustration-vector.jpg" alt="" /></label>
-                        <input id="addImg" type="file" accept='image/*' name="" onChange={handleChange} />
+                        <input id="addImg" type="file" accept='image/*' multiple name="" onChange={handleChange} />
                     </div>
                 </div>
             </div>

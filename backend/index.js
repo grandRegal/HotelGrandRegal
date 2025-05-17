@@ -255,6 +255,20 @@ async function init() {
             app.post('/api/admin/addTarrif', async(req, res)=>{
                 res.json(await content.adminRequests.content.addTarrif(req.body.name, req.body.isVeg, req.body.price, req.body.items));
             });
+            app.post('/api/admin/insertGallery/:cat', upload.array('gallery'), async(req, res)=>{
+                let convertedGallery = null;
+                try {
+                    convertedGallery = await Promise.all(
+                        req.files.map(async (img) => {
+                            const ack = await cloudinary.insertImg(img.buffer);
+                            return ack.url;
+                        })
+                    );
+                } catch (err) {
+                    console.log("err" + err.message);
+                }
+                res.json(await content.adminRequests.content.insertIntoGallery(req.params.cat, convertedGallery));
+            });
             app.get('/api/admin/bookingData', async(req, res)=>{
                 res.json(await content.adminRequests.booking.bookingData());
             });
@@ -541,6 +555,10 @@ async function init() {
                         reason: "Internal Error",
                     })
                 }
+            });
+            /*Gallery */
+            app.get('/api/gallery', async(req, res)=>{
+                res.json(await content.userReqeusts.fetchGallery());
             });
         } catch (err) {
             console.log("Failed To Start Server...\n" + err);

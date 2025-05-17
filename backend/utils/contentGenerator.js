@@ -27,7 +27,8 @@ module.exports = async function () {
         getBanquetMenu: async () => await getBanquetMenu(database),
         bookRoom: async (roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost) => await bookRoom(roomName, checkIn, checkOut, name, mobile, email, guest, services, message, cost, database),
         bookBanquet: async (name, fname, lname, mobile, email, date, time, duration, tarrif, plan, guestCount, additional, cost, shownCost) => await bookBanquet(name, fname, lname, mobile, email, date, time, duration, tarrif, plan, guestCount, additional, cost, shownCost, database),
-        enquire: async (fname, lnmae, mobile, email, reason, message) => await enquire(fname, lnmae, mobile, email, reason, message, database)
+        enquire: async (fname, lnmae, mobile, email, reason, message) => await enquire(fname, lnmae, mobile, email, reason, message, database),
+        fetchGallery: async() => await fetchGallery(database),
       },
       adminRequests: {
         dashboard: {
@@ -54,7 +55,8 @@ module.exports = async function () {
           addBanquet: async (detailedInfo, price, gallery, capacity) => await addBanquet(id, name, briefInfo, detailedInfo, price, gallery, capacity, database),
           deleteBanquet: async (id) => await deleteBanquet(id, database),
           addTarrif: async (name, isVeg, price, items) => await addTarrif(name, isVeg, price, items, database),
-          getTarrif: async () => await getAdminTarrif(database)
+          getTarrif: async () => await getAdminTarrif(database),
+          insertIntoGallery: async (cat, imgs)=> await insertIntoGallery(cat, imgs, database),
         },
         feedback: {
           getFeebacks: async () => await getFeedbacks(database),
@@ -760,6 +762,50 @@ async function getAdminTarrif(database) {
       content: [...data[0].details, ...data[1].details]
     }
   } catch (err) {
+    return {
+      status: false,
+      reason: "Error While Fetching Admin Tarrif\n Detailed Error = " + err.message
+    }
+  }
+}
+
+async function insertIntoGallery(category, imgs, database) {
+    try{
+      let ack = await database.collection('gallery').updateOne(
+        { cat: category },
+        { $addToSet: { imgs: { $each: imgs } } },
+        { upsert: true }
+      );
+      console.log('Gallery = ', ack);
+      if(ack.modifiedCount > 0 || ack.acknowledged)
+        return {
+          status: true,
+          content: null
+        }
+      return {
+        status: false,
+        reason: 'internal err'
+      }
+    }catch(err){
+      return {
+        status: false,
+        reason: 'internal err' + err.message
+      }
+    }
+}
+
+async function fetchGallery(database){
+  try{
+    let ack = await database.collection('gallery').find({}).toArray();
+    let dataToSend = {};
+    ack.forEach(cat => {
+      dataToSend[cat.cat] = cat.imgs
+    });
+    return {
+      status:true,
+      content: dataToSend
+    }
+  }catch(err){
     return {
       status: false,
       reason: "Error While Fetching Admin Tarrif\n Detailed Error = " + err.message
