@@ -609,7 +609,12 @@ function Gallery() {
                                 {
                                     value.map((img) =>
                                         <div className={galleryStyle.wrapper}>
-                                            <div className={galleryStyle.overlay}>Delete Image?</div>
+                                            <div className={galleryStyle.overlay} onClick={async () => {
+                                                    if (window.confirm("Do You Want To Delete This Image")) {
+                                                        await fetchData("deleteImg", "POST", { cat: key, img });
+                                                        fetchGallery();
+                                                    }
+                                                }}>Delete Image?</div>
                                             <img
                                                 className={galleryStyle.showcaseImg}
                                                 style={{
@@ -619,12 +624,6 @@ function Gallery() {
                                                 }}
                                                 src={img}
                                                 alt=""
-                                                onClick={async () => {
-                                                    if (window.confirm("Do You Want To Delete This Image")) {
-                                                        await fetchData("deleteImg", "POST", { cat: key, img });
-                                                        fetchGallery();
-                                                    }
-                                                }}
                                             />
                                         </div>
 
