@@ -20,7 +20,7 @@ function GalleryHolder() {
             }
         }
         getImgs();
-    });
+    }, []);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const allImages = Object.values(imgs).flat();
     const categoryOptions = ['all', ...Object.keys(imgs)];
