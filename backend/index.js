@@ -406,7 +406,7 @@ async function init() {
             app.get('/api/admin/generateLink', (req, res)=>{
                 let secret = generateRandomString();
                 credsData.keepSecret(secret);
-                sendMail(process.env.MANAGER_EMAIL, 'Password Reset Link', 'We Have Received Request for password Reset. \nClick on following link and follow the steps to reset password\n\nhttp://localhost:5173/reset/' + secret);
+                sendMail(process.env.MANAGER_EMAIL, 'Password Reset Link', 'We Have Received Request for password Reset. \nClick on following link and follow the steps to reset password\n\nhttps://admin.hotelgrandregal.com/reset/' + secret);
                 res.json({status: true});
             });
 
