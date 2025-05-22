@@ -8,31 +8,40 @@ const Creds = require('./utils/creds');
 const sendMail = require('./utils/sendMail');
 const cookieParser = require('cookie-parser');
 
+function generateRandomString(length = 100) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      result += chars[randomIndex];
+    }
+    return result;
+  }
 
 
 const adminAuthMiddleware = async (req, res, next) => {
     const path = req.path;
-  
+
     // Match /api/admin/* but not /api/admin/login
     if (path.startsWith('/api/admin/') && path !== '/api/admin/adminLogin') {
-      try {
-        const isValid = await credsData.verifyRequest(req.headers.cookie);
-        console.log(isValid, req.headers.cookie)
-        if (!isValid) {
-          return res.status(401).json({
-            status: false,
-            reason: "session expired"
-          });
+        try {
+            const isValid = await credsData.verifyRequest(req.headers.cookie);
+            console.log(isValid, req.headers.cookie)
+            if (!isValid) {
+                return res.status(401).json({
+                    status: false,
+                    reason: "session expired"
+                });
+            }
+        } catch (err) {
+            return res.status(500).json({
+                status: false,
+                reason: "internal server error"
+            });
         }
-      } catch (err) {
-        return res.status(500).json({
-          status: false,
-          reason: "internal server error"
-        });
     }
-}
 
-next();
+    next();
 };
 
 /*Server Logic */
@@ -65,7 +74,6 @@ const allowedOrigins = process.env.ACCESS_URL.split(',');
 
 /*User Login Logic */
 const credsData = new Creds();
-credsData.changeCreds("rushiphalle", "Abcd1234");
 
 async function init() {
     try {
@@ -86,11 +94,11 @@ async function init() {
             /*Admin Requests */
             app.post('/api/admin/adminLogin', async (req, res) => {
                 const { username, pwd, isToRemember } = req.body;
-            
+
                 if (!username || !pwd) {
                     return res.status(400).json({ status: false, reason: "Missing credentials" });
                 }
-            
+
                 try {
                     const cookieValue = await credsData.verifyLogin(username, pwd);
                     if (cookieValue) {
@@ -113,8 +121,8 @@ async function init() {
                     return res.status(500).json({ status: false, reason: "Internal server error" });
                 }
             });
-            
-            app.get('/api/admin/dashboard', async(req, res) => {
+
+            app.get('/api/admin/dashboard', async (req, res) => {
                 res.json(await content.adminRequests.dashboard.getDashboard());
             });
             app.post('/api/admin/addMenu', upload.single('thumb'), async (req, res) => {
@@ -249,13 +257,16 @@ async function init() {
             app.post('/api/admin/deleteBanquet', async (req, res) => {
                 res.json(await content.adminRequests.content.deleteBanquet(req.body.id));
             });
-            app.get('/api/admin/getTarrif', async(req, res)=>{
+            app.get('/api/admin/getTarrif', async (req, res) => {
                 res.json(await content.adminRequests.content.getTarrif());
             });
-            app.post('/api/admin/addTarrif', async(req, res)=>{
+            app.post('/api/admin/addTarrif', async (req, res) => {
                 res.json(await content.adminRequests.content.addTarrif(req.body.name, req.body.isVeg, req.body.price, req.body.items));
             });
-            app.post('/api/admin/insertGallery/:cat', upload.array('gallery'), async(req, res)=>{
+            app.post('/api/admin/deleteTarrif', async (req, res) => {
+                res.json(await content.adminRequests.content.deleteTarrif(req.body.name, req.body.isVeg));
+            });
+            app.post('/api/admin/insertGallery/:cat', upload.array('gallery'), async (req, res) => {
                 let convertedGallery = null;
                 try {
                     convertedGallery = await Promise.all(
@@ -269,23 +280,23 @@ async function init() {
                 }
                 res.json(await content.adminRequests.content.insertIntoGallery(req.params.cat, convertedGallery));
             });
-            app.get('/api/admin/bookingData', async(req, res)=>{
+            app.get('/api/admin/bookingData', async (req, res) => {
                 res.json(await content.adminRequests.booking.bookingData());
             });
-            app.post('/api/admin/acceptBooking', async(req, res)=>{
-                if(req.body.type == '0'){
+            app.post('/api/admin/acceptBooking', async (req, res) => {
+                if (req.body.type == '0') {
                     sendMail(req.body.email, 'Your Room Booking Confirmation', 'Your Room Booking At Hotel Grand Reagl Is Confirmed');
                     res.json(await content.adminRequests.booking.acceptRoomBooking(req.body.id));
-                }else{
+                } else {
                     sendMail(req.body.email, 'Your Banquet Booking Confirmation', 'Your Banquet Booking At Hotel Grand Reagl Is Confirmed');
                     res.json(await content.adminRequests.booking.acceptBanquetBooking(req.body.id));
                 }
             });
-            app.post('/api/admin/declineBooking', async(req, res)=>{
-                if(req.body.type == '0'){
+            app.post('/api/admin/declineBooking', async (req, res) => {
+                if (req.body.type == '0') {
                     sendMail(req.body.email, 'Your Room Booking Declined', 'Your Room Booking At Hotel Grand Reagl Is Declined');
                     res.json(await content.adminRequests.booking.declineRoomBooking(req.body.id));
-                }else{
+                } else {
                     sendMail(req.body.email, 'Your Banquet Booking Declined', 'Your Banquet Booking At Hotel Grand Reagl Is Declined');
                     res.json(await content.adminRequests.booking.declineBanquetBooking(req.body.id));
                 }
@@ -370,21 +381,42 @@ async function init() {
                     })
                 }
             });
-            app.post('/api/admin/deleteEnquiry', async(req, res)=>{
+            app.post('/api/admin/deleteEnquiry', async (req, res) => {
                 res.json(await content.adminRequests.enquiry.deleteEnquiry(req.body.id));
             });
-            app.get('/api/admin/enquiryData', async(req, res)=>{
+            app.get('/api/admin/enquiryData', async (req, res) => {
                 let data = await content.adminRequests.enquiry.enquiryDetails();
-                if(data.status) data.content.forEach(doc => {
+                if (data.status) data.content.forEach(doc => {
                     content.adminRequests.enquiry.setEnquiry(doc._id, 'read');
                 });
                 res.json(data);
             });
-            app.post('/api/admin/replyEnquiry', (req, res)=>{
+            app.post('/api/admin/replyEnquiry', (req, res) => {
                 content.adminRequests.enquiry.setEnquiry(req.body.id, 'replied');
                 sendMail(req.body.mailid, 'Reply From Hotel Grand Regal', req.body.reply);
-                res.json({status:true, content:null});
-            })
+                res.json({ status: true, content: null });
+            });
+            app.get('/api/admin/gallery', async (req, res) => {
+                res.json(await content.userReqeusts.fetchGallery());
+            });
+            app.post('/api/admin/deleteImg', async(req, res)=>{
+                res.json(await content.adminRequests.content.deleteImg(req.body.cat, req.body.img))
+            });
+
+            app.get('/api/admin/generateLink', (req, res)=>{
+                let secret = generateRandomString();
+                credsData.keepSecret(secret);
+                sendMail(process.env.MANAGER_EMAIL, 'Password Reset Link', 'We Have Received Request for password Reset. \nClick on following link and follow the steps to reset password\n\nhttp://localhost:5173/reset/' + secret);
+                res.json({status: true});
+            });
+
+            app.post('/api/admin/changePwd', async(req, res)=>{
+                let ack = await credsData.resetPassword(req.body.newPass, req.body.secret);
+                if(ack)
+                    res.json({status:true});
+                else
+                    res.json({status:false, reason:"Password Reset Link Is Expired Or InValid"});
+            });
 
             /*User Requests */
             /*Home Page */
@@ -518,11 +550,11 @@ async function init() {
                 res.json(ack);
             });
             /*Contact Page */
-            app.post('/api/enquire', async(req,res)=>{
+            app.post('/api/enquire', async (req, res) => {
                 let ack = await content.userReqeusts.enquire(req.body.fname, req.body.lname, req.body.mobile, req.body.email, req.body.reason, req.body.message);
-                if(ack.status){
+                if (ack.status) {
                     const enquiry = req.body;
-                const enquiryMessage = `
+                    const enquiryMessage = `
                 📩 𝐍𝐄𝐖 𝐄𝐍𝐐𝐔𝐈𝐑𝐘 𝐑𝐄𝐂𝐄𝐈𝐕𝐄𝐃
                 __________________________________________________________
 
@@ -538,7 +570,7 @@ async function init() {
 
                 📌 Please respond to this enquiry at your earliest convenience.
                 `;
-                sendMail(process.env.MANAGER_EMAIL, '📨 New Customer Enquiry Received', enquiryMessage);
+                    sendMail(process.env.MANAGER_EMAIL, '📨 New Customer Enquiry Received', enquiryMessage);
                 }
                 res.json(ack);
             });
@@ -557,7 +589,7 @@ async function init() {
                 }
             });
             /*Gallery */
-            app.get('/api/gallery', async(req, res)=>{
+            app.get('/api/gallery', async (req, res) => {
                 res.json(await content.userReqeusts.fetchGallery());
             });
         } catch (err) {

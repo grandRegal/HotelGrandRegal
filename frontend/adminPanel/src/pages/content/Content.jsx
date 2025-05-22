@@ -435,7 +435,8 @@ function BanquetTarrif() {
         }
         fetchRecords();
     }, []);
-    const TarrifForm = ({ pId = null, pName = null, pIsVeg = true, pPrice = null, pItems = [] }) => {
+    const TarrifForm = ({ pName = null, pIsVeg = true, pPrice = null, pItems = [] }) => {
+        console.log("Edit Called")
         const [items, setItems] = useState(pItems);
         const [name, setName] = useState(pName);
         const [isVeg, setIsVeg] = useState(pIsVeg);
@@ -455,6 +456,7 @@ function BanquetTarrif() {
                 price: price,
                 items: items
             }
+            await fetchData('deleteTarrif', 'POST', { isVeg: isVeg, name: name })
             let responce = await fetchData('addTarrif', 'POST', dataToSend);
             if (responce.status) {
                 alert("Data Addted");
@@ -510,8 +512,24 @@ function BanquetTarrif() {
             <div className={roomDetails.cardHolder}>
                 {
                     tarrifs.map((tarrif) =>
-                        <div>
-                            {JSON.stringify(tarrif)}
+                        <div style={{ boxShadow: "0px 0px 3px gray", borderRadius: "15px" }}>
+                            <div style={{ background: tarrif.isVeg ? "green" : "red", padding: "20px 60px", color: "white", borderRadius: "15px 15px 0px 0px" }}>
+                                <h1 style={{ textAlign: "center" }}>{tarrif.name}</h1>
+                                <h3 style={{ textAlign: "center" }}>Rs {tarrif.price}</h3>
+                            </div>
+                            <div>
+                                <ul style={{ display: "flex", flexDirection: "column", listStyle: "none", alignItems: "center", justifyContent: "center" }}>
+                                    {
+                                        tarrif.items.map((item) =>
+                                            <li>{item.name}</li>
+                                        )
+                                    }
+                                </ul>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", margin: "20px" }}>
+                                    <button style={{ background: "green", padding: "5px 30px", border: "0px", borderRadius: "20px", color: "white", fontWeight: "bold" }} onClick={() => popup(TarrifForm, { pName: tarrif.name, pIsVeg: tarrif.isVeg, pPrice: tarrif.price, pItems: tarrif.items.map((item) => item.name) })}>Edit</button>
+                                    <button style={{ background: "red", padding: "5px 30px", border: "0px", borderRadius: "20px", color: "white", fontWeight: "bold" }} onClick={async () => { alert("Tarrif Plan Will be deleted as flash you can continue further operations"); let responce = await fetchData('deleteTarrif', 'POST', { isVeg: tarrif.isVeg, name: tarrif.name }); if (responce.status) alert("Tarrif Deleted Successfully") }}>Delete</button>
+                                </div>
+                            </div>
                         </div>
                     )
                 }
@@ -526,7 +544,15 @@ function BanquetMenu() {
 }
 
 function Gallery() {
-
+    const [gallery, setGallery] = useState({});
+    let fetchGallery = async () => {
+        let ack = await fetchData('gallery', 'GET');
+        if (ack.status)
+            setGallery(ack.content);
+    }
+    useEffect(() => {
+        fetchGallery();
+    }, []);
     const AddForm = () => {
         const categories = ["Rooms", "Dine", "Banquet", "Food", "Environment"];
         const [imgs, setImgs] = useState([]);
@@ -544,6 +570,7 @@ function Gallery() {
             let response = await fetchData('insertGallery/' + cat, 'POST', null, imgs.map((img) => { return { key: 'gallery', value: img } }))
             if (response.status) {
                 alert("Images Added Successfully");
+                fetchGallery();
             } else {
                 alert("Internal Error" + response.reason);
             }
@@ -571,6 +598,43 @@ function Gallery() {
 
     return (
         <div className={galleryStyle.container}>
+            <div>
+                {
+
+                    Object.entries(gallery).map(([key, value]) => {
+                        return <div style={{ padding: "20px" }}>
+                            <span>{key}</span>
+                            <hr />
+                            <div style={{ display: "flex", width: "95vw", overflowX: "auto", gap: "20px", margin: "10px auto", cursor:"pointer" }}>
+                                {
+                                    value.map((img) =>
+                                        <div className={galleryStyle.wrapper}>
+                                            <div className={galleryStyle.overlay}>Delete Image?</div>
+                                            <img
+                                                className={galleryStyle.showcaseImg}
+                                                style={{
+                                                    height: "200px",
+                                                    width: "auto",
+                                                    cursor: "pointer",
+                                                }}
+                                                src={img}
+                                                alt=""
+                                                onClick={async () => {
+                                                    if (window.confirm("Do You Want To Delete This Image")) {
+                                                        await fetchData("deleteImg", "POST", { cat: key, img });
+                                                        fetchGallery();
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+
+                                    )
+                                }
+                            </div>
+                        </div>;
+                    })
+                }
+            </div>
             <button className={galleryStyle.addBtn} onClick={() => popup(AddForm, {})}>Add Images</button>
         </div>
     );
@@ -611,7 +675,7 @@ export default function Content() {
                     <option value="roomDetails">Room Details Management</option>
                     <option value="banquetDetails">Banquet Details Management</option>
                     <option value="banquetTarrif">Banquet Tarrif Management</option>
-                    <option value="banquetMenu">Banquet Menu Management</option>
+                    {/* <option value="banquetMenu">Banquet Menu Management</option> */}
                     <option selected value="gallery">Gallery Management</option>
                 </select>
             </div>

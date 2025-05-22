@@ -56,7 +56,9 @@ module.exports = async function () {
           deleteBanquet: async (id) => await deleteBanquet(id, database),
           addTarrif: async (name, isVeg, price, items) => await addTarrif(name, isVeg, price, items, database),
           getTarrif: async () => await getAdminTarrif(database),
+          deleteTarrif: async (name, isVeg)=> await deleteTarrif(name, isVeg, database),
           insertIntoGallery: async (cat, imgs)=> await insertIntoGallery(cat, imgs, database),
+          deleteImg: async(group, link) => await deleteImg(group, link, database),
         },
         feedback: {
           getFeebacks: async () => await getFeedbacks(database),
@@ -810,5 +812,34 @@ async function fetchGallery(database){
       status: false,
       reason: "Error While Fetching Admin Tarrif\n Detailed Error = " + err.message
     }
+  }
+}
+
+async function deleteTarrif(name, isVeg, database){
+  try{
+    let ack = await database.collection('tarrifs').updateOne(
+      { _id: isVeg ? new ObjectId("6805112b7d7c4a53e4b8b34b"): new ObjectId("6805112b7d7c4a53e4b8b34c") }, 
+      {
+        $pull: {
+          details: { name: name } 
+        }
+      }
+    )
+    return ack.modifiedCount == 1 ? {status:true, content:null}:{status:false, reason:"Item Not Found"}
+  }catch(err){
+    return {status:false, reason:"Item Not Found" + err.message}
+  }
+}
+
+async function deleteImg(group, link, database){
+  try{
+    let ack = await database.collection('gallery').updateOne({cat:group}, {
+      $pull:{
+        imgs: link
+      }
+    });
+    return ack.modifiedCount == 1 ? {status:true, content:null}:{status:false, reason:"Item Not Found"}
+  }catch(err){
+    return {status:false, reason:"Item Not Found" + err.message}
   }
 }

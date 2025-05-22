@@ -53,3 +53,62 @@
   background-color: #636bfd;
   color: white;
 }
+
+
+
+.container {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #c1cfff, #ffffff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.form {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2em;
+  border-radius: 1em;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: 100%;
+  max-width: 400px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.input {
+  padding: 0.75em;
+  border-radius: 0.5em;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+.button {
+  padding: 0.75em;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 0.5em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #357acc;
+}
+
+.message {
+  margin-top: 1em;
+  text-align: center;
+  color: red;
+  font-weight: bold;
+}
+
